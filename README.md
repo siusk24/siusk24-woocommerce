@@ -4,6 +4,8 @@
 - Server: PHP 7.2
 - Plugins: WooCommerce 4.0
 
-## Download and install
 
-To download the plugin, please go to "Releases" by pressing link in right column or directly download the newest version by pressing <a href="https://github.com/omniva-baltic/omniva-woocommerce-tarptautines/releases/latest/download/omniva-tarptautines-woo.zip" title="Newest plugin release">here</a>.
+## Download and install
+Click the button below to download the plugin installation file and upload the downloaded file through the "Plugins" > "Add new" > "Upload Plugin" in the Wordpress administration.
+
+[![Download](https://img.shields.io/badge/dynamic/json.svg?label=download&url=https://api.github.com/repos/mijora/siusk24-woocommerce/releases/latest&query=$.assets[0].name&style=for-the-badge)](https://github.com/mijora/siusk24-woocommerce/releases/latest/download/siusk24-woocommerce.zip)
