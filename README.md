@@ -1,4 +1,4 @@
-# Siusk24 International plugin for WP WooCommerce
+# Siusk24 plugin for WP WooCommerce
 
 ## Minimum requirements
 - Server: PHP 7.2
