@@ -1,0 +1,122 @@
+.siusk24 .tmjs-terminal-finder h2 {
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 24px;
+  color: #000000;
+  margin-bottom: 9px;
+}
+
+.siusk24 .tmjs-terminal-finder h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: none;
+}
+.siusk24 .tmjs-terminal-block>h3 {
+  font-size: 18px;
+  font-weight: 600;
+  background-color: #fff;
+    text-align: left;
+}
+#siusk24_map_container .tmjs-open-modal-btn{
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  grid-gap: 5px;
+  justify-content: center;
+}
+/* #siusk24_map_container .tmjs-open-modal-btn::after{
+  content: "";
+  display: block;
+  background-image: url("../images/mark.svg");
+  width: 11px;
+  height: 14px;
+} */
+.siusk24.tmjs-modal .tmjs-terminal-sidebar h2{
+  font-size: 19px;
+  margin-bottom: 15px;
+}
+.siusk24.tmjs-modal .tmjs-terminal-sidebar > h3{
+  margin-bottom: 7px;
+}
+.siusk24.tmjs-modal .tmjs-terminal-finder h3{
+  display: none;
+}
+.siusk24.tmjs-modal a.tmjs-geolocation-btn, .siusk24.tmjs-modal a:hover.tmjs-geolocation-btn a:focus.tmjs-geolocation-btn{
+  color: #838383;
+  font-weight: 400;
+  font-size: 14px;
+  width: auto;
+  border: unset;
+}
+.siusk24.tmjs-modal a.tmjs-geolocation-btn img{
+  width: 20px;
+}
+.siusk24.tmjs-modal a.tmjs-geolocation-btn span{
+  padding-left: 7px;
+}
+body#checkout .siusk24.tmjs-modal a.tmjs-geolocation-btn:hover{
+  color: #F89722;
+}
+.siusk24.tmjs-modal .tmjs-search-btn{
+  background-color: #F89722;
+}
+.siusk24.tmjs-modal .tmjs-active{
+  background-color: #FFFFFF !important;
+  border-radius: 3px;
+  padding: 8px 11px 9px;
+}
+.siusk24.tmjs-modal .tmjs-active .tmjs-terminal-name{
+  color: #000000;
+  font-weight: 400;
+}
+.siusk24.tmjs-modal .tmjs-terminal-comment{
+  display: none;
+}
+.siusk24.tmjs-modal a.tmjs-select-btn{
+  margin-top: 7px;
+  background-color: #F89722;
+  color: #FFFFFF;
+  max-width: max-content;
+}
+body#checkout  .siusk24.tmjs-modal a.tmjs-select-btn:hover{
+  color: #FFFFFF;
+}
+.siusk24.tmjs-modal .tmjs-terminal-block{
+  background-color: #F7F7F7;
+  padding: 0;
+  border: none;
+}
+.siusk24.tmjs-modal .tmjs-terminal-list{
+  padding-top: 14px;
+  padding-left: 14px;
+  list-style: none;
+}
+.siusk24.tmjs-modal .tmjs-terminal.tmjs-active .tmjs-terminal-distance{
+  color: #afafaf;
+  width: fit-content;
+}
+#siusk24_map_container .tmjs-container{
+  display: flex;
+  flex-direction: column-reverse;
+}
+i.siusk24-selected-terminal{
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  background: url(../img/selected.svg) no-repeat 0px 0px;
+  margin: -4px 4px;
+}
+.tmjs-search-input[type="text"] {
+  padding: 2px 10px;
+  border: 1px solid #dcdcdc;
+  border-radius: 3px;
+  line-height: 30px;
+  background-color: #fff;
+  width: calc(100% - 39px);
+  border-radius: 4px 0 0 4px;
+  margin-right: -1px;
+}
+.siusk24_terminal + span{
+  margin-bottom: 8px;
+  max-width: 230px;
+}
