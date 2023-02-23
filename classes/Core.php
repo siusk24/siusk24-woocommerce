@@ -126,7 +126,6 @@ class Core
             $receiver->setCountryId($this->get_country_id($country_code));
             $receiver->setStateCode($package->get_shipping_state());
             $receiver->setPhoneNumber((string)$package->get_billing_phone());
-culog($receiver);
             return $receiver;
         }
 
