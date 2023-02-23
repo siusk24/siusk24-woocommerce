@@ -6,11 +6,11 @@ use Siusk24Woo\Category;
 use Siusk24Woo\Product;
 use Siusk24Woo\Api;
 use Siusk24Woo\Helper;
-use OmnivaApi\Sender;
-use OmnivaApi\Receiver;
-use OmnivaApi\Parcel;
-use OmnivaApi\Item;
-use OmnivaApi\Order as ApiOrder;
+use Mijora\S24IntApiLib\Sender;
+use Mijora\S24IntApiLib\Receiver;
+use Mijora\S24IntApiLib\Parcel;
+use Mijora\S24IntApiLib\Item;
+use Mijora\S24IntApiLib\Order as ApiOrder;
 use setasign\Fpdi\Fpdi;
 
 class Core
@@ -688,7 +688,7 @@ class Core
                 unlink($label);
             }
 
-            $this->generate_pdf('Omniva_global_labels_' . current_time('Ymd_His') . '.pdf', $merged_file);
+            $this->generate_pdf('Siusk24_labels_' . current_time('Ymd_His') . '.pdf', $merged_file);
         } catch (\Exception $e) {
             return ['status' => 'error', 'msg' => $e->getMessage()];
         }
@@ -767,7 +767,7 @@ class Core
                 unlink($manifest);
             }
 
-            $this->generate_pdf('Omniva_global_manifests_' . current_time('Ymd_His') . '.pdf', $merged_file);
+            $this->generate_pdf('Siusk24_manifests_' . current_time('Ymd_His') . '.pdf', $merged_file);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

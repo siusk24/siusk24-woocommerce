@@ -7,19 +7,31 @@ if (!defined('ABSPATH')) {
 
 use Siusk24Woo\Helper;
 use Siusk24Woo\Terminal;
-use OmnivaApi\API as Omniva_api;
+use Mijora\S24IntApiLib\API as Siusk24_api;
 
 class Api {
     
     private $siusk24_api;
     private $prefix;
     private $config = [];
+    private $show_admin_notice = false;
     
     public function __construct($config = array()) {
         $this->config = $config;
-        $this->siusk24_api = new Omniva_api(Helper::get_config_value('api_token', $config, "no_token", true), false, false);
+        $this->siusk24_api = new Siusk24_api(Helper::get_config_value('api_token', $config, "no_token", true), false, false);
         $this->siusk24_api->setUrl(Helper::get_config_value('api_url', $config) . "/api/v1/");
         $this->prefix = Helper::get_prefix() . '_api';
+    }
+
+    public function show_notice_on_error($bool = true) {
+        $this->show_admin_notice = ($bool) ? true : false;
+        return $this;
+    }
+
+    private function show_admin_notice($msg_text, $msg_type = 'info', $dismissible = true) {
+        if ( ! $this->show_admin_notice ) return;
+        Helper::show_admin_notice($msg_text, $msg_type, $dismissible);
+        $this->show_admin_notice = false;
     }
     
     public function get_services($force = false){
@@ -49,11 +61,13 @@ class Api {
         return $data;
     }
     
-    public function get_countries(){
+    public function get_countries() {
         $token = Helper::get_config_value('api_token', $this->config, false);
-        if (!$token) {
+        
+        if ( ! $token ) {
             return [];
         }
+
         try {
             $cache_name = $this->prefix . '_countries';
             $data = get_transient($cache_name);
@@ -63,7 +77,9 @@ class Api {
             }
         } catch (\Exception $e) {
             $data = [];
+            $this->show_admin_notice(__('Failed to get countries list', 'siusk24'), 'error', false);
         }
+
         return $data;
     }
     

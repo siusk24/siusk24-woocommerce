@@ -8,5 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'setasign\\Fpdi\\' => array($vendorDir . '/setasign/fpdi/src'),
     'Siusk24Woo\\' => array($baseDir . '/classes'),
-    'OmnivaApi\\' => array($vendorDir . '/omniva/api-lib/src'),
+    'Mijora\\S24IntApiLib\\' => array($vendorDir . '/siusk24lt/api-lib/src'),
 );
