@@ -4,43 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "196b5a84035f101a5300836f0443deaa",
+    "content-hash": "a02c60ea29ac00873daf1a8541a1b3d5",
     "packages": [
-        {
-            "name": "omniva/api-lib",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:mijora/omniva-api.git",
-                "reference": "23e274fce80f77e2b8aaa6c7d1f1bacbcfafdcd1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mijora/omniva-api/zipball/23e274fce80f77e2b8aaa6c7d1f1bacbcfafdcd1",
-                "reference": "23e274fce80f77e2b8aaa6c7d1f1bacbcfafdcd1",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "OmnivaApi\\": "src/"
-                }
-            },
-            "license": [
-                "#"
-            ],
-            "description": "library for Omniva api",
-            "support": {
-                "source": "https://github.com/mijora/omniva-api/tree/master",
-                "issues": "https://github.com/mijora/omniva-api/issues"
-            },
-            "time": "2022-09-12T10:37:36+00:00"
-        },
         {
             "name": "setasign/fpdf",
             "version": "1.8.5",
@@ -158,13 +123,48 @@
                 }
             ],
             "time": "2023-02-09T10:38:43+00:00"
+        },
+        {
+            "name": "siusk24lt/api-lib",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/siusk24/Siusk24LT.git",
+                "reference": "c4db9d8301189ed3373c575c8b5ad286fd01a85f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/siusk24/Siusk24LT/zipball/c4db9d8301189ed3373c575c8b5ad286fd01a85f",
+                "reference": "c4db9d8301189ed3373c575c8b5ad286fd01a85f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mijora\\S24IntApiLib\\": "src/"
+                }
+            },
+            "license": [
+                "#"
+            ],
+            "description": "library for Siusk24LT api",
+            "support": {
+                "source": "https://github.com/siusk24/Siusk24LT/tree/master",
+                "issues": "https://github.com/siusk24/Siusk24LT/issues"
+            },
+            "time": "2023-01-24T11:47:27+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "omniva/api-lib": 20
+        "siusk24lt/api-lib": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

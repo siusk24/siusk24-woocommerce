@@ -1,0 +1,666 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Siusk24\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-23 12:24+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.3; wp-6.1.1\n"
+"X-Domain: siusk24"
+
+#: classes/Manifest.php:181
+msgid "A label could not be generated for any order"
+msgstr ""
+
+#: classes/Manifest.php:594
+msgid "Actions"
+msgstr ""
+
+#: classes/ShippingMethod.php:79
+msgid "Activate SIUSK24.lt services"
+msgstr ""
+
+#: classes/ShippingMethod.php:235
+msgid "Activate this option for orders consolidation to one shipment"
+msgstr ""
+
+#: classes/ShippingMethod.php:664
+msgid "Active"
+msgstr ""
+
+#: classes/Order.php:67
+msgid "Active services"
+msgstr ""
+
+#: classes/ShippingMethod.php:436
+msgid "Additional settings"
+msgstr ""
+
+#: classes/Manifest.php:21
+msgid "All orders"
+msgstr ""
+
+#: classes/Manifest.php:550
+msgctxt "All status"
+msgid "All"
+msgstr ""
+
+#: classes/ShippingMethod.php:93
+msgid "API key"
+msgstr ""
+
+#: classes/ShippingMethod.php:95
+msgid ""
+"API key can be provided by SIUSK24 client support team if you haven’t got "
+"any."
+msgstr ""
+
+#: classes/ShippingMethod.php:84
+msgid "API settings"
+msgstr ""
+
+#: classes/ShippingMethod.php:87
+msgid "API URL"
+msgstr ""
+
+#: classes/ShippingMethod.php:129
+msgid "Bank account"
+msgstr ""
+
+#: classes/Manifest.php:561 classes/Manifest.php:591
+msgid "Barcode"
+msgstr ""
+
+#: classes/Helper.php:49
+msgid "C.O.D."
+msgstr ""
+
+#: classes/Order.php:45
+msgid "Carrier"
+msgstr ""
+
+#: classes/Helper.php:54
+msgid "Carry service"
+msgstr ""
+
+#: classes/Order.php:74
+msgid "Cart ID"
+msgstr ""
+
+#: classes/ShippingMethod.php:90
+msgid "Change only if want use custom Api URL."
+msgstr ""
+
+#: classes/ShippingMethod.php:219 classes/ShippingMethod.php:271
+msgid "Cheapest"
+msgstr ""
+
+#: classes/Main.php:77
+msgid "Choose terminal"
+msgstr ""
+
+#: classes/ShippingMethod.php:141
+msgid "City"
+msgstr ""
+
+#: classes/Main.php:78
+msgid "City not found"
+msgstr ""
+
+#: classes/ShippingMethod.php:122
+msgid "Company information"
+msgstr ""
+
+#: classes/ShippingMethod.php:125
+msgid "Company name"
+msgstr ""
+
+#: classes/ShippingMethod.php:133
+msgid "Company registration code"
+msgstr ""
+
+#: classes/ShippingMethod.php:137
+msgid "Company VAT"
+msgstr ""
+
+#: classes/Manifest.php:23
+msgid "Completed orders"
+msgstr ""
+
+#: classes/ShippingMethod.php:154
+msgid "Country"
+msgstr ""
+
+#: classes/ShippingMethod.php:355 classes/ShippingMethod.php:360
+#: classes/ShippingMethod.php:397
+msgid "Couriers"
+msgstr ""
+
+#: classes/Order.php:101
+msgid "Create"
+msgstr ""
+
+#: classes/Manifest.php:546 classes/Manifest.php:587
+msgid "Customer"
+msgstr ""
+
+#: classes/ShippingMethod.php:679
+msgid "Deactivate courier"
+msgstr ""
+
+#: classes/ShippingMethod.php:417
+msgid "Default dimensions"
+msgstr ""
+
+#: classes/ShippingMethod.php:90
+#, php-format
+msgid "Default is %s"
+msgstr ""
+
+#: classes/Category.php:19 classes/Category.php:39
+msgid "Default weight, kg"
+msgstr ""
+
+#: classes/Order.php:86
+msgid "Delete"
+msgstr ""
+
+#: classes/ShippingMethod.php:629
+msgid "Disabled"
+msgstr ""
+
+#: classes/Helper.php:52
+msgid "Document return"
+msgstr ""
+
+#: classes/ShippingMethod.php:162
+msgid "Email"
+msgstr ""
+
+#: classes/ShippingMethod.php:77
+msgid "Enable"
+msgstr ""
+
+#: classes/ShippingMethod.php:629
+msgid "Enabled"
+msgstr ""
+
+#: classes/Main.php:70
+msgid "Enter postcode"
+msgstr ""
+
+#: classes/Main.php:72
+msgid "Enter postcode/address"
+msgstr ""
+
+#: classes/Order.php:164
+msgid "EORI number"
+msgstr ""
+
+#: classes/Manifest.php:657
+msgid "Error"
+msgstr ""
+
+#: classes/ShippingMethod.php:151
+#, php-format
+msgid "Example for Latvia: %1$s. Example for other countries: %2$s."
+msgstr ""
+
+#: classes/Manifest.php:178
+msgid "Failed to generate labels for these orders"
+msgstr ""
+
+#: classes/Api.php:80
+msgid "Failed to get countries list"
+msgstr ""
+
+#: classes/Core.php:683
+msgid "Failed to get labels"
+msgstr ""
+
+#: classes/Core.php:781
+msgid "Failed to get manifest"
+msgstr ""
+
+#: classes/Core.php:761
+msgid "Failed to get manifests"
+msgstr ""
+
+#: classes/ShippingMethod.php:221 classes/ShippingMethod.php:273
+msgid "Fastest"
+msgstr ""
+
+#: classes/Manifest.php:578
+msgid "Filter"
+msgstr ""
+
+#: classes/ShippingMethod.php:305
+msgid "Fixed price"
+msgstr ""
+
+#: classes/Helper.php:55
+msgid "Fragile"
+msgstr ""
+
+#: classes/ShippingMethod.php:343
+msgid "Free shipping cart amount"
+msgstr ""
+
+#: classes/Manifest.php:569
+msgid "From"
+msgstr ""
+
+#: classes/Manifest.php:766
+msgid "Generate labels"
+msgstr ""
+
+#: classes/Manifest.php:679
+msgid "Generate manifest"
+msgstr ""
+
+#: classes/Manifest.php:774
+msgid "Generate manifests"
+msgstr ""
+
+#: classes/Order.php:58
+msgid "Generating..."
+msgstr ""
+
+#: classes/ShippingMethod.php:214
+msgid "Group of services"
+msgstr ""
+
+#: classes/ShippingMethod.php:529 classes/Category.php:25
+#: classes/Category.php:48
+msgid "Height"
+msgstr ""
+
+#: classes/Order.php:171
+msgid "HS code"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/mijora"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://mijora.lt/"
+msgstr ""
+
+#: classes/Manifest.php:543 classes/Manifest.php:586
+msgid "ID"
+msgstr ""
+
+#: classes/Helper.php:53
+msgid "Insurance"
+msgstr ""
+
+#: classes/Manifest.php:386
+msgid "International manifest"
+msgstr ""
+
+#: classes/Manifest.php:186
+msgid "Labels successfully generated for all orders"
+msgstr ""
+
+#: classes/ShippingMethod.php:345
+msgid "Leave blank to disable"
+msgstr ""
+
+#: classes/ShippingMethod.php:431
+msgid "Leave blank to disable."
+msgstr ""
+
+#: classes/ShippingMethod.php:537 classes/Category.php:26
+#: classes/Category.php:49
+msgid "Length"
+msgstr ""
+
+#: classes/Manifest.php:593
+msgid "Manifest date"
+msgstr ""
+
+#: classes/Manifest.php:564 classes/Manifest.php:592
+msgid "Manifest ID"
+msgstr ""
+
+#: classes/ShippingMethod.php:424
+#, php-format
+msgid "Max cart weight (%s)"
+msgstr ""
+
+#: classes/ShippingMethod.php:419
+msgid ""
+"Maximum size of the entire basket for post machines. Leave all blank to turn "
+"off. <br>\n"
+"                The preliminary basket size is calculated by trying to "
+"arrange all the products (their boxes) according to the dimensions specified "
+"in their settings."
+msgstr ""
+
+#. Author of the plugin
+msgid "Mijora"
+msgstr ""
+
+#: classes/ShippingMethod.php:220 classes/ShippingMethod.php:272
+msgid "Most expensive"
+msgstr ""
+
+#: classes/Manifest.php:22
+msgid "New orders"
+msgstr ""
+
+#: classes/ShippingMethod.php:664
+msgid "No active couriers added. To add courier, click on selector above."
+msgstr ""
+
+#: classes/Manifest.php:184
+msgid "Not all orders were successful in generating labels. Unknown error."
+msgstr ""
+
+#: classes/Manifest.php:74
+msgid "Not received action value"
+msgstr ""
+
+#: classes/ShippingMethod.php:69
+msgid "Not received countries list from API"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Official Siusk24 plugin that combine shipping between different countries"
+msgstr ""
+
+#: classes/Manifest.php:589
+msgid "Order Date"
+msgstr ""
+
+#: classes/Manifest.php:270
+msgid "Order ID"
+msgstr ""
+
+#: classes/Core.php:574
+msgid "Order ID not received"
+msgstr ""
+
+#: classes/Core.php:579 classes/Order.php:220
+msgid "Order not found"
+msgstr ""
+
+#: classes/Manifest.php:588
+msgid "Order Status"
+msgstr ""
+
+#: classes/ShippingMethod.php:166
+msgid "Phone number"
+msgstr ""
+
+#: classes/Main.php:71
+msgid "Place not found"
+msgstr ""
+
+#: classes/Main.php:273
+msgid "Please select parcel terminal."
+msgstr ""
+
+#: classes/ShippingMethod.php:149
+msgid "Postcode"
+msgstr ""
+
+#: classes/Manifest.php:688
+msgid "Preparing..."
+msgstr ""
+
+#: classes/ShippingMethod.php:301
+msgid "Price type"
+msgstr ""
+
+#: classes/Manifest.php:674 classes/Order.php:81
+msgid "Print label"
+msgstr ""
+
+#: classes/Manifest.php:770
+msgid "Print labels"
+msgstr ""
+
+#: classes/Manifest.php:778
+msgid "Print latest manifest"
+msgstr ""
+
+#: classes/Manifest.php:684
+msgid "Print manifest"
+msgstr ""
+
+#: classes/Manifest.php:270
+msgid "Problem"
+msgstr ""
+
+#: classes/Manifest.php:99 classes/Manifest.php:126 classes/Manifest.php:190
+msgid "Refresh page"
+msgstr ""
+
+#: classes/Manifest.php:579
+msgid "Reset"
+msgstr ""
+
+#: classes/Main.php:76
+msgid "Reset search"
+msgstr ""
+
+#: classes/Helper.php:50
+msgid "Return"
+msgstr ""
+
+#: classes/Main.php:75
+msgid "Search"
+msgstr ""
+
+#: classes/ShippingMethod.php:218
+msgid "Select"
+msgstr ""
+
+#: classes/ShippingMethod.php:216
+msgid "Select applicable shopping cart group of services"
+msgstr ""
+
+#: classes/Main.php:103
+msgid "Select couriers"
+msgstr ""
+
+#: classes/Main.php:69
+msgid "Select post office"
+msgstr ""
+
+#: classes/ShippingMethod.php:303
+#, php-format
+msgid ""
+"Select price type for services. Enter the value in the \"%s\" field below."
+msgstr ""
+
+#: classes/ShippingMethod.php:268
+msgid "Select which service of this group show in the checkout"
+msgstr ""
+
+#: classes/Manifest.php:133 classes/Manifest.php:199 classes/Manifest.php:224
+msgid "Selected orders not received"
+msgstr ""
+
+#: classes/Manifest.php:590
+msgid "Service"
+msgstr ""
+
+#: classes/ShippingMethod.php:260
+msgid "Service name"
+msgstr ""
+
+#: classes/ShippingMethod.php:307
+msgid "Service price with added fixed value"
+msgstr ""
+
+#: classes/ShippingMethod.php:306
+msgid "Service price with added percentage"
+msgstr ""
+
+#: classes/ShippingMethod.php:242
+msgid "Service settings"
+msgstr ""
+
+#: classes/Order.php:147
+msgid "Services"
+msgstr ""
+
+#: classes/Main.php:189
+msgid "Settings"
+msgstr ""
+
+#: classes/ShippingMethod.php:234
+msgid "Shipment consolidation"
+msgstr ""
+
+#: classes/Order.php:71
+msgid "Shipment ID"
+msgstr ""
+
+#: classes/ShippingMethod.php:414
+msgid "Shipment limitation settings"
+msgstr ""
+
+#: classes/ShippingMethod.php:170
+msgid "Shop name"
+msgstr ""
+
+#: classes/ShippingMethod.php:266
+msgid "Shopping cart service preferences"
+msgstr ""
+
+#: classes/ShippingMethod.php:210
+msgid "Shopping cart settings"
+msgstr ""
+
+#: classes/Main.php:68
+msgid "Show in map"
+msgstr ""
+
+#. Name of the plugin
+#: classes/Manifest.php:57 classes/Manifest.php:58
+#: classes/ShippingMethod.php:32 classes/Order.php:27
+msgid "Siusk24"
+msgstr ""
+
+#: classes/Main.php:188
+msgid "Siusk24 services updated! Please check your selection."
+msgstr ""
+
+#: classes/ShippingMethod.php:33
+msgid "Siusk24 shipping method"
+msgstr ""
+
+#: classes/ShippingMethod.php:222 classes/ShippingMethod.php:274
+msgid "Slowest"
+msgstr ""
+
+#: classes/ShippingMethod.php:145
+msgid "Street"
+msgstr ""
+
+#: classes/Order.php:142
+msgid "Terminal"
+msgstr ""
+
+#: classes/Main.php:73
+msgid "Terminal map"
+msgstr ""
+
+#: classes/Core.php:613
+msgid "Terminal not found"
+msgstr ""
+
+#: classes/Main.php:74
+msgid "Terminals list"
+msgstr ""
+
+#: classes/Core.php:599
+msgid "The shipment is already registered"
+msgstr ""
+
+#: classes/Manifest.php:572
+msgid "To"
+msgstr ""
+
+#: classes/ShippingMethod.php:159
+msgid "To get a list of countries, first need to save API logins"
+msgstr ""
+
+#: classes/Order.php:77
+msgid "Tracking"
+msgstr ""
+
+#: classes/Helper.php:51
+msgid "U.K.D"
+msgstr ""
+
+#: classes/Manifest.php:141
+msgid "Unable to get WooCommerce order"
+msgstr ""
+
+#: classes/Manifest.php:158 classes/Manifest.php:215 classes/Manifest.php:243
+msgid "Unknown error"
+msgstr ""
+
+#: classes/ShippingMethod.php:605
+msgid "Update"
+msgstr ""
+
+#: classes/ShippingMethod.php:488
+msgid "Update latest version of services"
+msgstr ""
+
+#: classes/ShippingMethod.php:613
+msgid "Update services"
+msgstr ""
+
+#: classes/Main.php:79
+msgid "Use my location"
+msgstr ""
+
+#: classes/ShippingMethod.php:327
+msgid "Use service price"
+msgstr ""
+
+#: classes/ShippingMethod.php:303 classes/ShippingMethod.php:317
+msgid "Value"
+msgstr ""
+
+#: classes/ShippingMethod.php:548 classes/Category.php:20
+#: classes/Category.php:41
+msgid "Weight"
+msgstr ""
+
+#: classes/ShippingMethod.php:329
+msgid "Which service price to use"
+msgstr ""
+
+#: classes/ShippingMethod.php:521 classes/Category.php:24
+#: classes/Category.php:47
+msgid "Width"
+msgstr ""
+
+#: classes/Category.php:23 classes/Category.php:45
+msgid "Width x Height x Length, cm"
+msgstr ""
+
+#: classes/ShippingMethod.php:331
+msgid "With included tax"
+msgstr ""
+
+#: classes/ShippingMethod.php:332
+msgid "Without tax"
+msgstr ""

@@ -55,7 +55,7 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
         private function get_countries_options()
         {
             $options = [];
-            $countries = $this->api->get_countries();
+            $countries = $this->api->show_notice_on_error()->get_countries();
             foreach ($countries as $country) {
                 $options[$country->code] = $country->name;
             }
@@ -65,6 +65,9 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
         public function init_form_fields()
         {
             $countries_options = $this->get_countries_options();
+            if ( empty($countries_options) ) {
+                $countries_options = array('- ' . __('Not received countries list from API', 'siusk24') . ' -');
+            }
             $currency = get_woocommerce_currency();
             $fields = array(
                 'main_logo' => array(
@@ -83,8 +86,8 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
                 'api_url' => array(
                     'title' => __('API URL', 'siusk24'),
                     'type' => 'text',
-                    'default' => 'https://siusk24.lt',
-                    'description' => __('Change only if want use custom Api URL.', 'siusk24') . ' ' . sprintf(__('Default is %s', 'siusk24'), '<code>https://siusk24.lt</code>'),
+                    'default' => 'https://www.siusk24.lt',
+                    'description' => __('Change only if want use custom Api URL.', 'siusk24') . ' ' . sprintf(__('Default is %s', 'siusk24'), '<code>https://www.siusk24.lt</code>'),
                 ),
                 'api_token' => array(
                     'title' => __('API key', 'siusk24'),
@@ -153,6 +156,7 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
                     'class' => 'checkout-style pickup-point',
                     'options' => $countries_options,
                     'default' => 'LT',
+                    'description' => __('To get a list of countries, first need to save API logins', 'siusk24')
                 ),
                 'shop_email' => array(
                     'title' => __('Email', 'siusk24'),
