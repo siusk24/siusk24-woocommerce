@@ -13,14 +13,14 @@
         }
     ],
     "require": {
-        "omniva/api-lib" : "dev-master",
+        "siusk24lt/api-lib" : "dev-master",
         "setasign/fpdf": "^1.8",
         "setasign/fpdi": "^2.3"
     },
     "repositories": [
         {
             "type" : "vcs",
-            "url" : "git@github.com:mijora/omniva-api.git"
+            "url" : "git@github.com:siusk24/Siusk24LT.git"
         }
     ]
 }

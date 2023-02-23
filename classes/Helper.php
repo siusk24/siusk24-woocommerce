@@ -122,4 +122,15 @@ class Helper {
         return preg_replace('/[^0-9]/', '', $postcode);
     }
 
+    static function show_admin_notice($msg_text, $msg_type = 'info', $dismissible = true)
+    {
+        add_action('admin_notices', function () use ($msg_text, $msg_type, $dismissible) {
+            $additional_classes = '';
+            if ($dismissible) {
+                $additional_classes = ' is-dismissible';
+            }
+
+            echo '<div class="notice notice-' . $msg_type . $additional_classes . '"><p>' . $msg_text . '</p></div>';
+        });
+    }
 }

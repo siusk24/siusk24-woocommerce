@@ -54,13 +54,13 @@ class Manifest {
     public function register_siusk24_manifest_menu_page() {
         add_submenu_page(
                 'woocommerce',
-                __('Siusk24', 'siusk24'),
-                __('Siusk24', 'siusk24'),
+                __('Siusk24 shipments', 'siusk24'),
+                __('Siusk24 shipments', 'siusk24'),
                 'manage_woocommerce',
                 'siusk24-manifest',
                 array($this, 'render_page'),
                 //plugins_url('siusk24-woocommerce/images/icon.png'),
-                1
+                10
         );
     }
 
@@ -532,7 +532,7 @@ class Manifest {
             }
             ?>
             <div class="table-container">
-                <form id="filter-form" class="" action="<?php echo $this->make_link(array('action' => $action)); ?>" method="POST">
+                <form id="filter-form" class="" action="<?php echo $this->make_link(array('action' => $action)); ?>" method="POST" target="_blank">
                     <?php wp_nonce_field('siusk24_labels', 'siusk24_labels_nonce'); ?>
                     <table class="wp-list-table widefat fixed striped posts">
                         <thead>
@@ -761,7 +761,7 @@ class Manifest {
         private function render_table_mass_action_buttons() {
             ?>
             <div class="mass-print-container">
-                <form method="post" action="" onsubmit="siusk24_get_selected_orders(this)" class="inline">
+                <form method="post" action="" onsubmit="siusk24_get_selected_orders(this)" class="inline" target="_blank">
                     <?php echo $this->build_mass_action_button(array(
                         'title' => __('Generate labels', 'siusk24'),
                         'name' => 'generate_labels'
