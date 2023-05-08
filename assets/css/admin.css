@@ -393,3 +393,39 @@ td.services-container p.no-active{
     height: 16px;
     margin-right: 10px;
 }
+.check-api-status {
+    display: inline;
+    margin-left: 5px;
+}
+.check-api-status.success {
+    color: green;
+}
+.check-api-status.error {
+    color: red;
+}
+.check-api-status.warning {
+    color: orange;
+}
+tr.disabled {
+    position: relative;
+}
+tr.disabled:after {
+    content: '';
+    position: absolute;
+    display: block;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: #ccc6;
+}
+.woocommerce_page_wc-settings form p.submit {
+    position: fixed;
+    bottom: 0;
+    margin: unset;
+    background: #f0f0f1;
+    padding: 10px 1%;
+    left: 180px;
+    right: 20px;
+    border-top: 1px solid #ccc;
+}

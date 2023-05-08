@@ -41,6 +41,7 @@ class Main {
         add_action('siusk24_event', array($this, 'siusk24_event_callback_function'));
         add_filter('cron_schedules', array($this, 'cron_add_5min'));
         add_action('woocommerce_checkout_process', array($this, 'siusk24_terminal_validate'));
+        add_action( 'wp_ajax_siusk24_check_api', array($this, 'siusk24_check_api'));
         add_action( 'wp_ajax_siusk24_terminals_sync', array($this, 'siusk24_update_terminals'));
         add_action( 'wp_ajax_siusk24_services_sync', array($this, 'siusk24_update_services'));
         add_filter('plugin_action_links_' . SIUSK24_BASENAME, array($this, 'settings_link'));
@@ -284,6 +285,23 @@ class Main {
         );
 
         wp_send_json($array_result);
+        wp_die();
+    }
+
+    public function siusk24_check_api() {
+        $return = array(
+            'status' => 'success',
+            'message' => __('API credentials is good', 'siusk24'),
+        );
+        $check_result = $this->api->get_countries(true);
+        if ( empty($check_result) ) {
+            $return['status'] = 'error';
+            $return['message'] = __('API credentials not working', 'siusk24');
+            update_option(Helper::get_prefix() . '_api_check', '0');
+        } else {
+            update_option(Helper::get_prefix() . '_api_check', '1');
+        }
+        wp_send_json($return);
         wp_die();
     }
  

@@ -7,4 +7,4 @@
 ## Download and install
 Click the button below to download the plugin installation file and upload the downloaded file through the "Plugins" > "Add new" > "Upload Plugin" in the Wordpress administration.
 
-[![Download](https://img.shields.io/badge/dynamic/json.svg?label=download&url=https://api.github.com/repos/mijora/siusk24-woocommerce/releases/latest&query=$.assets[0].name&style=for-the-badge)](https://github.com/mijora/siusk24-woocommerce/releases/latest/download/siusk24-woocommerce.zip)
+[![Download](https://img.shields.io/badge/dynamic/json.svg?label=download&url=https://api.github.com/repos/siusk24/siusk24-woocommerce/releases/latest&query=$.assets[0].name&style=for-the-badge)](https://github.com/siusk24/siusk24-woocommerce/releases/latest/download/siusk24-woocommerce.zip)

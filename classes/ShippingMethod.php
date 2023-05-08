@@ -55,7 +55,7 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
         private function get_countries_options()
         {
             $options = [];
-            $countries = $this->api->show_notice_on_error()->get_countries();
+            $countries = $this->api->get_countries();
             foreach ($countries as $country) {
                 $options[$country->code] = $country->name;
             }
@@ -86,14 +86,21 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
                 'api_url' => array(
                     'title' => __('API URL', 'siusk24'),
                     'type' => 'text',
+                    'class' => 'check-api-this',
                     'default' => 'https://www.siusk24.lt',
-                    'description' => __('Change only if want use custom Api URL.', 'siusk24') . ' ' . sprintf(__('Default is %s', 'siusk24'), '<code>https://www.siusk24.lt</code>'),
+                    'description' => __('Change only if want use custom Api URL', 'siusk24') . '. ' . sprintf(__('Default is %s', 'siusk24'), '<code>https://www.siusk24.lt</code>'),
                 ),
                 'api_token' => array(
                     'title' => __('API key', 'siusk24'),
                     'type' => 'text',
-                    'description' => __('API key can be provided by SIUSK24 client support team if you haven’t got any.', 'siusk24'),
+                    'class' => 'check-api-this',
+                    'description' => __('API key can be provided by SIUSK24 client support team if you haven’t got any', 'siusk24'),
 
+                ),
+                'check_api' => array(
+                    'title' => __('Check API', 'siusk24'),
+                    'type' => 'check_api',
+                    'description' => __('API check is possible only after saving the settings', 'siusk24'),
                 ),
                 /*
                 'own_login' => array(
@@ -599,22 +606,67 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
             return $html;
         }
 
-        public function generate_sync_button_html($key, $value)
+        public function generate_check_api_html( $key, $value )
         {
-            $class = (isset($value['class'])) ? $value['class'] : '';
-            $html = '<tr valign="top"><th>' . ($value['title'] ?? '') . '</th><td colspan=""><button type = "button" class = "button-primary terminals-sync-btn">' . __('Update', 'siusk24') . '</button></td></tr>';
-            return $html;
+            $last_check_status = get_option(Helper::get_prefix() . '_api_check', '');
+            $btn_class = ($last_check_status === '0') ? 'disable_all' : '';
+            return $this->build_action_button_row(array(
+                'row_title' => $value['title'] ?? '',
+                'row_class' => $value['class'] ?? '',
+                'btn_title' => __('Check API', 'siusk24'),
+                'btn_class' => 'check-api-btn ' . $btn_class,
+                'add_html' => '<p class="check-api-status"></p>',
+                'description' => $value['description'] ?? '',
+            ));
         }
 
-        public function generate_services_sync_button_html($key, $value)
+        public function generate_sync_button_html( $key, $value )
         {
+            return $this->build_action_button_row(array(
+                'row_title' => $value['title'] ?? '',
+                'row_class' => $value['class'] ?? '',
+                'btn_title' => __('Update', 'siusk24'),
+                'btn_class' => 'terminals-sync-btn',
+                'description' => $value['description'] ?? '',
+            ));
+        }
+
+        public function generate_services_sync_button_html( $key, $value )
+        {
+            $row_params = array(
+                'row_title' => $value['title'] ?? '',
+                'row_class' => $value['class'] ?? '',
+                'btn_title' => __('Update services', 'siusk24'),
+                'btn_class' => 'services-sync-btn',
+                'description' => $value['description'] ?? '',
+            );
             $last_update = get_option(Helper::get_prefix() . '_last_services_update', '');
-            $class = (isset($value['class'])) ? $value['class'] : '';
-            $html = '<tr valign="top"><th>' . ($value['title'] ?? '') . '</th><td colspan=""><button type = "button" class = "button-primary services-sync-btn">' . __('Update services', 'siusk24') . '</button>';
             if ($last_update) {
-                $html .= '<p class="last-service-update"><span class="clock"></span>' . __(sprintf('Last update at %s', $last_update), 'siusk24') . '</p>';
+                $row_params['add_html'] = '<p class="last-service-update"><span class="clock"></span>' . __(sprintf('Last update at %s', $last_update), 'siusk24') . '</p>';
+            }
+
+            return $this->build_action_button_row($row_params);
+        }
+
+        private function build_action_button_row( $params )
+        {
+            $row_class = $params['row_class'] ?? '';
+            $row_title = $params['row_title'] ?? '';
+            $btn_class = $params['btn_class'] ?? '';
+            $btn_title = $params['btn_title'] ?? '';
+            $description = $params['description'] ?? '';
+            $additional_html = $params['add_html'] ?? '';
+
+            $html = '<tr valign="top" class="' . $row_class . '"><th>' . $row_title . '</th><td colspan="">';
+            $html .= '<button type="button" class="button-primary ' . $btn_class . '">' . $btn_title . '</button>';
+            if ( ! empty($additional_html) ) {
+                $html .= $additional_html;
+            }
+            if ( ! empty($description) ) {
+                $html .= '<p class="description">' . $description . '</p>';
             }
             $html .= '</td></tr>';
+
             return $html;
         }
 
@@ -802,6 +854,7 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
             update_option('woocommerce_' . Helper::get_prefix() . '_dimensions', $dimension_options);
 
             update_option(Helper::get_prefix() . '_services_updated', 0);
+
             return parent::process_admin_options();
         }
     }

@@ -61,7 +61,7 @@ class Api {
         return $data;
     }
     
-    public function get_countries() {
+    public function get_countries($force = false) {
         $token = Helper::get_config_value('api_token', $this->config, false);
         
         if ( ! $token ) {
@@ -70,6 +70,9 @@ class Api {
 
         try {
             $cache_name = $this->prefix . '_countries';
+            if ($force) {
+                $this->clear_countries_cache();
+            }
             $data = get_transient($cache_name);
             if ($data === false) {
                 $data = $this->siusk24_api->listAllCountries();
@@ -81,6 +84,13 @@ class Api {
         }
 
         return $data;
+    }
+
+    public function clear_countries_cache() {
+        $cache_name = $this->prefix . '_countries';
+        delete_transient($cache_name);
+
+        return $this;
     }
     
     public function update_terminals(){
