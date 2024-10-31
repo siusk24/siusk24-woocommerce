@@ -9,8 +9,9 @@ class API
 {
     protected $url = "https://demo.siusk24.lt/api/v1/";
     protected $token;
+    private $timeout = 15;
     private $debug_mode;
-    private $timeout = 5;
+    private $debug_data = array();
 
     public function __construct($token = false, $test_mode = false, $api_debug_mode = false)
     {
@@ -69,29 +70,19 @@ class API
         $response = curl_exec($ch);
 
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $transactionTime = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
 
         curl_close($ch);
 
         if ($this->debug_mode) {
-            echo '<b>Token:</b><br><br>';
-            echo $this->token;
-            echo '<br><br>';
-            echo '<b>Endpoint:</b><br><br>';
-            echo $url;
-            echo '<br><br>';
-            echo '<b>Method:</b><br><br>';
-            echo debug_backtrace()[1]['function'] . '()';
-            echo '<br><br>';
-            echo '<b>Data passed:</b><br><br>';
-            echo json_encode($data, JSON_PRETTY_PRINT);
-            echo '<br><br>';
-            echo '<b>Data returned:</b><br><br>';
-            echo json_encode(json_decode($response), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            echo '<br><br>';
-            echo '<b>Default API lib response:</b><br><br>';
+            $this->addToDebug('Token', $this->token);
+            $this->addToDebug('Endpoint', $url);
+            $this->addToDebug('Method', debug_backtrace()[1]['function'] . '()');
+            $this->addToDebug('Data passed', json_encode($data, JSON_PRETTY_PRINT));
+            $this->addToDebug('Data returned', json_encode(json_decode($response), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $this->addToDebug('Response HTTP code', $httpCode);
+            $this->addToDebug('Response time', $transactionTime);
         }
-
-        echo $this->debug_mode ? '<br><br>---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br><br>' : '';
 
         return $this->handleApiResponse($response, $httpCode);
     }
@@ -101,9 +92,8 @@ class API
         $respObj = json_decode($response, true);
         if ($httpCode == 200) {
             if (isset($respObj['messages']) && $respObj['messages']) {
-                // istrinti sita eilute, kad vartotojui neisvestu
                 if ($this->debug_mode) {
-                    echo 'messages from ' . debug_backtrace()[2]['function'] . '():<br><br>';
+                    $this->addToDebug('Error from ' . debug_backtrace()[2]['function'] . '()', json_encode($respObj['messages'], JSON_PRETTY_PRINT));
                 }
                 $this->throwErrors($respObj['messages']);
             }
@@ -117,7 +107,7 @@ class API
 
         if (isset($respObj['errors']) && $respObj['errors']) {
             if ($this->debug_mode) {
-                echo 'errors in ' . debug_backtrace()[2]['function'] . '():<br><br>';
+                $this->addToDebug('Error from ' . debug_backtrace()[2]['function'] . '()', json_encode($respObj['errors'], JSON_PRETTY_PRINT));
             }
             $this->throwErrors($respObj['errors']);
         }
@@ -141,6 +131,27 @@ class API
         }
 
         throw new ValidationException(implode(",<br>", $errs));
+    }
+
+    private function addToDebug($title, $value)
+    {
+        $this->debug_data[] = array(
+            'time' => time(),
+            'title' => $title,
+            'value' => $value,
+        );
+    }
+
+    public function getDebugData($return_as_string = true, $with_date = true)
+    {
+        $return = array();
+        
+        foreach ( $this->debug_data as $data ) {
+            $date = ($with_date) ? '[' . date('Y-m-d H:i:s', $data['time']) . '] ' : '';
+            $return[] = $date . $data['title'] . ': ' . $data['value'];
+        }
+
+        return ($return_as_string) ? implode(PHP_EOL, $return) : $return;
     }
 
     public function listAllCountries()

@@ -8,7 +8,56 @@ jQuery(document).ready(function($){
         }
     });
     $('.has-depends').trigger('change');
-    
+
+    $('.check-api-this').on('change', function() {
+        $('button.check-api-btn').prop('disabled', true);
+    });
+
+    if ( $('button.check-api-btn').hasClass('disable_all') ) {
+        $('button.check-api-btn').closest('tr').nextAll().addClass('disabled');
+    }
+
+    $('button.check-api-btn').on('click', function() {
+        var btn = $(this);
+        var btn_row = btn.closest('tr');
+        var check_status = btn.siblings('.check-api-status');
+        check_status.removeClass('success warning error');
+        check_status.text('');
+        btn.addClass('loading').prop('disabled', true);
+        jQuery.post(
+            siusk24data.ajax_url,
+            {
+                'action': 'siusk24_check_api'
+            },
+            function( response ) {
+                if ( typeof response !== 'object' || response === null ) {
+                    check_status.addClass('error').text('Failed to check');
+                    return;
+                }
+                if ( 'status' in response ) {
+                    check_status.addClass(response.status);
+                } else {
+                    check_status.addClass('warning');
+                }
+                if ( 'message' in response ) {
+                    check_status.text(response.message);
+                } else {
+                    check_status.text('Received an unknown response');
+                }
+                if ( check_status.hasClass('error') ) {
+                    btn_row.nextAll().addClass('disabled');
+                } else {
+                    location.reload();
+                }
+            }
+        ).fail(function() {
+            check_status.addClass('error').text('Failed to check');
+            btn_row.nextAll().addClass('disabled');
+        }).always(function() {
+            btn.removeClass('loading').prop('disabled', false);
+        });
+    });
+
     $('button.terminals-sync-btn').on('click', function() {
         var btn = $(this);
         btn.addClass('loading').prop('disabled', true);

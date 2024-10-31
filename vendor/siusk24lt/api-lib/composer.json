@@ -2,6 +2,7 @@
     "name": "siusk24lt/api-lib",
     "description": "library for Siusk24LT api",
     "type": "library",
+    "version": "0.1.2",
     "license": "#",
     "minimum-stability": "stable",
     "require": {
