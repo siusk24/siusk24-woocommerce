@@ -62,6 +62,21 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
             return $options;
         }
 
+        public function admin_options()
+        {
+            ?>
+            <!--<div class="siusk24-title">
+                <div class="title">
+                    <h2><?php echo $this->method_title; ?></h2>
+                    <p><?php echo $this->method_description; ?></p>
+                </div>
+            </div>-->
+            <table class="form-table siusk24-settings">
+                <?php $this->generate_settings_html(); ?>
+            </table>
+            <?php
+        }
+
         public function init_form_fields()
         {
             $countries_options = $this->get_countries_options();

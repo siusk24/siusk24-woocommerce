@@ -142,37 +142,36 @@ try {
         ->setCallbackUrls($callback_urls);
     $order3->addItems($item2)->addItems($items1)->addParcels($parcel1)->addParcels($parcels1);
 
-//  $allCountries                       = $ps->listAllCountries();
-//  $allStates                        = $ps->listAllStates();
-//  $allServices                        = $ps->listAllServices();
-//  $offers                              = $ps->getOffers($sender1, $receiver1, $parcels1);
-//  $allOrders                          = $ps->getAllOrders();
-//  $generateOrderResult = $ps->generateOrder($order3);
-//  $generateOrder_parcelTerminalResult = $ps->generateOrder_parcelTerminal($order2);
-//  $cancelOrderResult = $ps->cancelOrder('S240423208227');
-//  $label                              = $ps->getLabel('S240423208227');
-//  $orderTrackingInfo                  = $ps->trackOrder('S240423208227');
-//  $manifest                           = $ps->generateManifest('S240423208227');
-//  $manifestLatest                     = $ps->generateManifest('S240423208227');
-  $terminals                          = $ps->getTerminals('LT');
+    // $allCountries                        = $ps->listAllCountries();
+    // $allStates                           = $ps->listAllStates();
+    // $allServices                         = $ps->listAllServices();
+    // $offers                              = $ps->getOffers($sender1, $receiver1, $parcels1);
+    // $allOrders                           = $ps->getAllOrders();
+    // $generateOrderResult                 = $ps->generateOrder($order3);
+    // $generateOrder_parcelTerminalResult  = $ps->generateOrder_parcelTerminal($order2);
+    // $cancelOrderResult                   = $ps->cancelOrder('S240423208227');
+    // $label                               = $ps->getLabel('S240423208227');
+    // $orderTrackingInfo                   = $ps->trackOrder('S240423208227');
+    // $manifest                            = $ps->generateManifest('S240423208227');
+    // $manifestLatest                      = $ps->generateManifest('S240423208227');
+    $terminals                              = $ps->getTerminals('LT');
+    // $debugData                              = $ps->getDebugData();
 
-
-
-
-//    echo json_encode($allCountries);
-//    echo json_encode($allStates);
-//    echo json_encode($allServices);
-//    echo json_encode($offers);
-//    echo json_encode($allOrders);
-//    echo json_encode($generateOrderResult);
-//    echo json_encode($generateOrder_parcelTerminalResult);
-//    echo json_encode($cancelOrderResult);
-//    echo json_encode($label);
-//    echo json_encode($orderTrackingInfo);
-//    echo json_encode($manifest);
-//    echo json_encode($manifestLatest);
-//    echo json_encode($manifestLatest);
-  echo json_encode($terminals);
+    // echo json_encode($allCountries);
+    // echo json_encode($allStates);
+    // echo json_encode($allServices);
+    // echo json_encode($offers);
+    // echo json_encode($allOrders);
+    // echo json_encode($generateOrderResult);
+    // echo json_encode($generateOrder_parcelTerminalResult);
+    // echo json_encode($cancelOrderResult);
+    // echo json_encode($label);
+    // echo json_encode($orderTrackingInfo);
+    // echo json_encode($manifest);
+    // echo json_encode($manifestLatest);
+    // echo json_encode($manifestLatest);
+    echo json_encode($terminals);
+    // echo $debugData;
 } catch (Siusk24LTException $e) {
     echo $e->getMessage();
 }
