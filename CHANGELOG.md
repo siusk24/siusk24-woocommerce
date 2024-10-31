@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Fixed settings page display
+
 ### Improved
 - Added option to check API credentials
 
