@@ -35,21 +35,21 @@ class Parcel
 
     public function setWidth($width)
     {
-        $this->width = $width;
+        $this->width = ceil($width);
 
         return $this;
     }
 
     public function setLength($length)
     {
-        $this->length = $length;
+        $this->length = ceil($length);
 
         return $this;
     }
 
     public function setHeight($height)
     {
-        $this->height = $height;
+        $this->height = ceil($height);
 
         return $this;
     }
