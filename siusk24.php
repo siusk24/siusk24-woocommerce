@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Siusk24
- * Version: 1.0.0
+ * Version: 1.0.1
  * Plugin URI: https://github.com/mijora
  * Description: Official Siusk24 plugin that combine shipping between different countries
  * Author: Mijora
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-define('SIUSK24_VERSION', '1.0.0');
+define('SIUSK24_VERSION', '1.0.1');
 define('SIUSK24_BASENAME', plugin_basename(__FILE__));
 define('SIUSK24_PLUGIN_DIR', plugin_dir_path( __FILE__ ));
 

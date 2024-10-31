@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.0.1] 2024-10-31
 ### Fixed
 - Fixed settings page display
 
