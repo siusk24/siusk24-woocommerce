@@ -1,0 +1,1 @@
+(()=>{"use strict";(0,window.wp.plugins.registerPlugin)("siusk24_block",{render:()=>{},scope:"woocommerce-checkout"})})();

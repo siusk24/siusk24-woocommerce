@@ -1,4 +1,5 @@
 jQuery(document).ready(function($){
+    console.log('siusk_24 order.js');
     $('.siusk24_terminal').select2();
     function loader(on){
         if (on){

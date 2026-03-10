@@ -21,14 +21,20 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
         /**
          * Constructor for your shipping class
          *
+         * @param int $instance_id Shipping method instance.
+         *
          * @access public
          * @return void
          */
-        public function __construct()
+        public function __construct( $instance_id = 0 )
         {
+
+            parent::__construct();
+
             $this->core = new Core;
             $this->api = $this->core->get_api();
             $this->id = Helper::get_prefix();
+            $this->instance_id = absint( $instance_id );
             $this->method_title = __('Siusk24', 'siusk24');
             $this->method_description = __('Siusk24 shipping method', 'siusk24');
             $this->supports = array(
@@ -115,7 +121,8 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
                 'check_api' => array(
                     'title' => __('Check API', 'siusk24'),
                     'type' => 'check_api',
-                    'description' => __('API check is possible only after saving the settings', 'siusk24'),
+                    //'description' => __('API check is possible only after saving the settings', 'siusk24'),
+                    'description' => '',
                 ),
                 /*
                 'own_login' => array(
@@ -796,14 +803,18 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
         public function calculate_shipping($package = array())
         {
             try {
-                if ($this->has_restricted_cat()) {
+                if ( $this->has_restricted_cat() ) {
                     return;
                 }
                 $cart_weight = WC()->cart->cart_contents_weight;
                 $config = $this->core->get_config();
                 $dimensions = $this->core->get_package_dimensions();
 
+
+
                 $offers = $this->core->filter_enabled_offers($this->core->get_offers($package));
+
+
                 $this->core->set_offers_price($offers);
                 $this->core->sort_offers($offers);
                 $this->core->show_offers($offers);
@@ -813,6 +824,7 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
                 if(!$dimensions['cart_weight'] || (float)$dimensions['cart_weight'] > (float)$cart_weight)
                 {
                     foreach ($offers as $offer) {
+
                         if ($this->core->is_offer_terminal($offer)) {
                             continue;
                         }
@@ -844,6 +856,7 @@ if (!class_exists('\Siusk24Woo\ShippingMethod')) {
                     }
                 }
             } catch (\Exception $e) {
+
             }
         }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.2] 2025-03-10
+### Fixed
+- HPOS compatibility
+- Block checkout compatibility for Courier services
+- Block checkout compatibility for Terminals services (with map)
+
 ## [1.0.1] 2024-10-31
 ### Fixed
 - Fixed settings page display

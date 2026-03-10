@@ -37,7 +37,7 @@ class Main {
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_action('wp_enqueue_scripts', array($this, 'front_scripts'), 99);
         add_action('woocommerce_after_shipping_rate', array($this, 'siusk24_show_terminals'));
-        //add_action('wp_footer', array($this, 'footer_modal'));
+        add_action('wp_footer', array($this, 'block_checkout_css'));
         add_action('siusk24_event', array($this, 'siusk24_event_callback_function'));
         add_filter('cron_schedules', array($this, 'cron_add_5min'));
         add_action('woocommerce_checkout_process', array($this, 'siusk24_terminal_validate'));
@@ -49,17 +49,61 @@ class Main {
         if (get_option(Helper::get_prefix() . '_services_updated', 0) == 1) {
             add_action('admin_notices', array($this, 'updated_services_notice'));
         }
+
+
+        // integration with Woocommerce blocks start.
+        add_action(
+            'woocommerce_blocks_checkout_block_registration',
+            function ( $integration_registry ) {
+                if (!$integration_registry->is_registered('siusk_24_block')) {
+                    $integration_registry->register(new BlockCheckout());
+                }
+            }
+        );
+
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_block_script' ), 100 );
+
+        add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'block_checkout_save_terminal_id' ), 10, 2 );
+        // integration with Woocommerce blocks end.
+    }
+
+
+    public function enqueue_block_script() {
+
+
+        if ( has_block( 'woocommerce/checkout' ) ) {
+
+            $siusk24_settings = $this->core->get_config();
+            $set_autoselect = (isset($siusk24_settings['auto_select']) && $siusk24_settings['auto_select'] == 'yes') ? 'true' : 'false';
+            $max_distance = (isset($siusk24_settings['terminal_distance']) && $siusk24_settings['terminal_distance']) ? $siusk24_settings['terminal_distance'] : '50';
+
+
+            wp_enqueue_script( 'siusk24-terminal-block', plugin_dir_url(__DIR__) . 'assets/js/block-checkout.js', array('jquery'), SIUSK24_VERSION );
+
+            wp_localize_script(
+                    'siusk24-terminal-block',
+                    'siusk24_block',
+                    array(
+                            'ajaxurl'            => admin_url( 'admin-ajax.php' ),
+                            'auto_select'            => $set_autoselect,
+                            'identifier'            => '',
+                            'max_distance'            => $max_distance,
+                            'api_url'            => $siusk24_settings['api_url']
+                    )
+            );
+
+        }
     }
 
     public function front_scripts() {
-        if (is_checkout() && ! is_wc_endpoint_url()) {
+        if ( ( is_checkout() || has_block( 'woocommerce/checkout' ) ) && ! is_wc_endpoint_url() ) {
 
-            wp_enqueue_script('siusk24-helper', plugin_dir_url(__DIR__) . 'assets/js/siusk24_helper.js', array('jquery'), SIUSK24_VERSION);
-            wp_enqueue_script('siusk24', plugin_dir_url(__DIR__) . 'assets/js/siusk24.js', array('jquery'), SIUSK24_VERSION);
-            wp_enqueue_script('siusk24-terminal', plugin_dir_url(__DIR__) . 'assets/js/terminal.js', array('jquery'), SIUSK24_VERSION);
+            wp_enqueue_script('siusk24-helper', plugin_dir_url(__DIR__) . 'assets/js/siusk24_helper.js', array('jquery'), SIUSK24_VERSION, array( 'in_footer' => true ) );
+            wp_enqueue_script('siusk24', plugin_dir_url(__DIR__) . 'assets/js/siusk24.js', array('jquery'), SIUSK24_VERSION,  array( 'in_footer' => true ) );
+            wp_enqueue_script('siusk24-terminal', plugin_dir_url(__DIR__) . 'assets/js/terminal.js', array('jquery'), SIUSK24_VERSION, array( 'in_footer' => true ) );
 
-            wp_enqueue_style('siusk24', plugin_dir_url(__DIR__) . 'assets/css/terminal-mapping.css', array(), SIUSK24_VERSION);
-            wp_enqueue_style('siusk24-css', plugin_dir_url(__DIR__) . 'assets/css/siusk24.css', array(), SIUSK24_VERSION);
+            wp_enqueue_style('siusk24', plugin_dir_url(__DIR__) . 'assets/css/terminal-mapping.css', array(), SIUSK24_VERSION );
+            wp_enqueue_style('siusk24-css', plugin_dir_url(__DIR__) . 'assets/css/siusk24.css', array(), SIUSK24_VERSION );
             //wp_enqueue_script('leaflet', plugin_dir_url(__DIR__) . 'assets/js/leaflet.js', array('jquery'), null, true);
             //wp_enqueue_style('leaflet', plugin_dir_url(__DIR__) . 'assets/css/leaflet.css');
 
@@ -84,7 +128,7 @@ class Main {
     }
 
     public function admin_scripts() {
-       
+
         // wp_register_script( 'siusk24_admin_jQuery', 'https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js', null, null, true );
         // wp_enqueue_script('siusk24_admin_jQuery');
         wp_register_script( 'siusk24_admin_multiselect', plugin_dir_url(__DIR__) . 'assets/js/multiselect-dropdown.js', null, null, true );
@@ -104,8 +148,27 @@ class Main {
             'select_couriers' => __('Select couriers', 'siusk24'),
         ));
 
-        $current_page = get_current_screen()->base;
-        if ($current_page == 'post') {
+        //$current_page = get_current_screen()->base;
+
+        $order_id = null;
+        $is_siusk24_order = false;
+
+        if( isset($_GET['post']) && is_numeric($_GET['post'])) {
+            $order_id = sanitize_text_field( wp_unslash($_GET['post']) );
+        } else if( isset($_GET['id']) && is_numeric($_GET['id'])) {
+            $order_id = sanitize_text_field(wp_unslash($_GET['id']));
+        }
+
+        if( $order_id ) {
+            $order = wc_get_order( $order_id );
+            if( $order && ! is_wp_error( $order) ) {
+                $helper           = new \Siusk24Woo\Helper();
+                $is_siusk24_order = $helper->is_siusk24_order($order);
+            }
+
+        }
+
+        if ( $is_siusk24_order ) {
             wp_register_script('siusk24_order_js', plugin_dir_url(__DIR__) . 'assets/js/order.js', array('jquery', 'select2'), SIUSK24_VERSION, true);
             wp_enqueue_script('siusk24_order_js');
         }
@@ -170,9 +233,12 @@ class Main {
           $('body').trigger('load-siusk24-terminals');
           $('.siusk24_terminal').select2();
           jQuery('.siusk24_terminal').on('select2:select', function (e){ 
+            console.log('Classic checkout terminal_id selected');
+            console.log(jQuery(this).val());
             jQuery('input[name=\"siusk24_terminal\"]').val(jQuery(this).val());
             var text = jQuery('.siusk24_terminal option:selected').text();
             document.querySelector('.tmjs-selected-terminal').innerHTML = text;
+            jQuery('.tmjs-selected-terminal').addClass('show-selected');
           });
         });
         </script>";
@@ -210,31 +276,67 @@ class Main {
     }
 
     public function siusk24_event_callback_function() {
-        $args = array(
-            'post_type' => 'shop_order',
-            'numberposts' => -1,
-            'post_status' => 'any',
-            'meta_query' => array(
-                'relation' => 'AND',
-                array(
-                    'key' => '_siusk24_shipment_id',
-                    'compare' => 'EXISTS',
-                ),
-                array(
-                    'key' => '_siusk24_tracking_numbers',
-                    'compare' => 'NOT EXISTS',
-                ),
-            )
+
+        // Array to store order objects.
+        $order_objects = array();
+
+        // Meta query criteria.
+        $meta_query = array(
+            'relation' => 'AND',
+            array(
+                'key' => '_siusk24_shipment_id',
+                'compare' => 'EXISTS',
+            ),
+            array(
+                'key' => '_siusk24_tracking_numbers',
+                'compare' => 'NOT EXISTS',
+            ),
         );
-        $orders = get_posts($args);
-        foreach ($orders as $order) {
-            $shipment_id = get_post_meta($order->ID, '_siusk24_shipment_id', true);
+
+        if( 'yes' === get_option('woocommerce_custom_orders_table_enabled') ) {
+            $query_args = array(
+                'limit' => -1,
+                'status' => 'any',
+                'type' => 'shop_order',
+                'meta_query' => $meta_query,
+                'return' => 'objects',
+            );
+            $order_objects = wc_get_orders($query_args);
+        } else {
+            // Traditional method using get_posts
+            $args = array(
+                'post_type' => 'shop_order',
+                'numberposts' => -1,
+                'post_status' => 'any',
+                'meta_query' => $meta_query,
+            );
+
+            $posts = get_posts($args);
+
+            // Convert post objects to WC_Order objects.
+            foreach ($posts as $post) {
+                $order_objects[] = wc_get_order($post->ID);
+            }
+        }
+
+
+        foreach ($order_objects as $order) {
+            // ver.1.0.2
+            $shipment_id = $order->get_meta( $order->get_id(), '_siusk24_shipment_id' );
+
             if ($shipment_id) {
+
                 try {
-                    $response = $this->api->get_label($shipment_id);
-                    update_post_meta($order->ID, '_siusk24_tracking_numbers', $response->tracking_numbers);
+                    $response = $this->api->get_label( $shipment_id );
+                    $order->update_meta_data('_siusk24_tracking_numbers', $response->tracking_numbers );
+                    $order->save();
+
                 } catch (\Exception $e) {
-                    
+                    if ( function_exists( 'wc_get_logger' ) ) {
+                        \wc_get_logger()->debug( 'SIUSK_24:', array( 'source' => 'siusk-24' ) );
+                        \wc_get_logger()->debug( print_r( __METHOD__ . ': ' . __LINE__, true ), array( 'source' => 'siusk-24' ) );
+                        \wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'siusk-24' ) );
+                    }
                 }
             }
         }
@@ -343,6 +445,131 @@ class Main {
             }
         }
         return '<select class="siusk24_terminal" name="siusk24_terminal">' . $parcel_terminals . '</select>';
+    }
+
+
+    /**
+     * Save locker point to order_meta
+     *
+     * @param @param \WC_Order $order Order object.
+     * @param \WP_REST_Request $request Full details about the request.
+     *
+     * @return void
+     * @throws RouteException
+     * @since 1.0.4
+     */
+    public function block_checkout_save_terminal_id( $order, $request )
+    {
+        if ( ! $order ) {
+            return;
+        }
+
+        $shipping_method_id = null;
+        $service_code = null;
+
+        foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
+            $shipping_method_id          = $item->get_method_id();
+            $shipping_method_instance_id = $item->get_instance_id();
+        }
+
+
+        $request_body = json_decode( $request->get_body(), true );
+
+        if ( ! empty( $request_body['extensions']['siusk24']['service-id'] ) ) {
+            $service_code = sanitize_text_field( wp_unslash( $request_body['extensions']['siusk24']['service-id'] ) );
+            if ( ! empty( $shipping_method_id )  &&  ! empty( $service_code ) ) {
+                $order->update_meta_data('_siusk24_service', $service_code);
+                $order->update_meta_data('_siusk24_method', 1);
+                $order->save();
+            }
+        }
+
+        if ( ! empty( $request_body['extensions']['siusk24']['terminal-id'] ) ) {
+
+            $terminal_id = sanitize_text_field( wp_unslash( $request_body['extensions']['siusk24']['terminal-id'] ) );
+            $order->update_meta_data( '_siusk24_terminal_id', $terminal_id );
+            $order->update_meta_data( '_siusk24_method', 1 );
+            $order->save();
+
+            if ( ! empty( $request_body['extensions']['siusk24']['terminal-method-id'] ) ) {
+                $terminal_method_id = sanitize_text_field( wp_unslash( $request_body['extensions']['siusk24']['terminal-method-id'] ) );
+                $service_code = $this->core->get_service_form_method( $terminal_method_id );
+                $identifier = $this->core->get_identifier_form_method( $terminal_method_id );
+                $order->update_meta_data( '_siusk24_service', $service_code );
+                if( 'radio-control-0-' !== $identifier && 'radio-control-1-' !== $identifier ) {
+                    $order->update_meta_data('_siusk24_identifier', $identifier);
+                }
+                $order->save();
+            }
+
+
+        } else {
+
+            // Throw error
+            /*throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+                    'siusk24_terminal_required',
+                    'Siusk 24: ' . __( 'Terminal (parcel locker) must be choosen', 'siusk24' ),
+                    400
+            );*/
+
+        }
+
+    }
+
+
+
+
+    public function block_checkout_css()
+    {
+        if ( has_block( 'woocommerce/checkout' ) ) { ?>
+            <style>/* Position the wrapper to align with option-layout */
+                /* Override inline width on wrapper */
+                #siusk24_generated_wrapper {
+                    width: 100% !important;
+                    box-sizing: border-box;
+                }
+
+                /* Make all Select2 elements take full width of wrapper */
+                #siusk24_generated_wrapper .select2,
+                #siusk24_generated_wrapper .select2-container,
+                #siusk24_generated_wrapper .select2-selection,
+                #siusk24_generated_wrapper .select2-selection--single {
+                    width: 100% !important;
+                    box-sizing: border-box;
+                }
+
+                /* Ensure the wrapper aligns with option-layout (accounting for radio button) */
+                .wc-block-components-radio-control__option:has(#siusk24_generated_wrapper) {
+                    flex-wrap: wrap;
+                }
+
+                /* Match the left padding/margin of option-layout */
+                .wc-block-components-radio-control__option #siusk24_generated_wrapper {
+                    flex: 0 0 calc(100% - 24px); /* 24px = typical radio button space */
+                    margin-left: 24px;
+                }
+
+                /* Also style the map container if present */
+                #siusk24_generated_wrapper #siusk24_map_container {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+                a.tmjs-open-modal-btn {
+                    max-width: 90%;
+                }
+
+                span#select2-siusk24_terminal-xv-container {
+                    background: #dbf8e0 !important;
+                }
+                .siusk24_terminal {
+                    max-width: 90% !important;
+                }
+                select[name="siusk24_terminal"] {
+                    height: 30px;
+                    margin-bottom: 20px;
+                }
+            </style>
+        <?php }
     }
 
 }
