@@ -133,4 +133,33 @@ class Helper {
             echo '<div class="notice notice-' . $msg_type . $additional_classes . '"><p>' . $msg_text . '</p></div>';
         });
     }
+
+
+    public function is_siusk24_order( $post ) {
+
+        $order_id = null;
+
+        if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+            // HPOS usage is enabled.
+            if ( is_a( $post, 'WC_Order' ) ) {
+                $order_id = $post->get_id();
+            }
+        } else {
+            // Traditional orders are in use.
+            if ( is_object( $post ) && method_exists( $post, 'get_type' ) && 'shop_order' === $post->get_type() ) {
+                $order_id = $post->get_id();
+            } elseif ( is_object( $post ) && isset( $post->post_type ) && 'shop_order' === $post->post_type ) {
+                // Fallback for when $post is a WP_Post object.
+                $order_id = $post->ID;
+            }
+        }
+
+        if( ! $order_id ) {
+            return false;
+        }
+
+        $order = wc_get_order( $order_id );
+
+        return $order->has_shipping_method( Helper::get_prefix() );
+    }
 }

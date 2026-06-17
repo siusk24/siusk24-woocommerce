@@ -13,7 +13,7 @@ class Order {
     public function __construct($api, $core) {
         $this->api = $api;
         $this->core = $core;
-        add_action('add_meta_boxes_shop_order', array($this, 'siusk24_meta_boxes'), 1);
+        add_action('add_meta_boxes', array( $this, 'siusk24_meta_boxes' ), 10, 2 );
         add_action('woocommerce_checkout_update_order_meta', array($this, 'add_service_code'));
         add_action('wp_ajax_create_siusk24_order', array($this, 'create_order'));
         add_action('wp_ajax_load_siusk24_order', array($this, 'load_order'));
@@ -22,20 +22,53 @@ class Order {
         
     }
 
-    public function siusk24_meta_boxes($post) {
-        if ($this->is_siusk24_order($post)) {
-            add_meta_box('siusk24_shipping_meta_box', __('Siusk24', 'siusk24'), array($this, 'meta_box_content'), 'shop_order', 'side', 'core');
+    public function siusk24_meta_boxes( $post_type, $post ) {
+
+        $helper = new \Siusk24Woo\Helper();
+        $is_siusk24_order = $helper->is_siusk24_order( $post );
+
+        if ( $is_siusk24_order ) {
+            add_meta_box('siusk24_shipping_meta_box', __('Siusk24', 'siusk24'), array($this, 'meta_box_content'), '', 'side', 'core');
         }
     }
 
-    public function meta_box_content($post) {
-        $manifest_date = get_post_meta($post->ID, '_siusk24_manifest_date', true);
-        $shipment_id = get_post_meta($post->ID, '_siusk24_shipment_id', true);
-        $cart_id = get_post_meta($post->ID, '_siusk24_cart_id', true);
-        $terminal_id = get_post_meta($post->ID, '_siusk24_terminal_id', true);
-        $identifier = get_post_meta($post->ID, '_siusk24_identifier', true);
-        $receiver_country = get_post_meta( $post->ID, '_shipping_country', true );
-        $carrier_code = get_post_meta($post->ID, '_siusk24_service', true);
+    public function meta_box_content( $post ) {
+
+        // ver.1.0.2
+        $order_id = null;
+
+        if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+            // HPOS usage is enabled.
+            if ( is_a( $post, 'WC_Order' ) ) {
+                $order_id = $post->get_id();
+            }
+        } else {
+            // Traditional orders are in use.
+            if ( is_object( $post ) && $post->post_type == 'shop_order' ) {
+                $order_id = $post->ID;
+            }
+        }
+
+        if( ! $order_id ) {
+            return;
+        }
+
+        $wc_order = wc_get_order( $order_id );
+
+        if( ! $wc_order || is_wp_error($wc_order) ) {
+            return;
+        }
+
+        $manifest_date = $wc_order->get_meta( '_siusk24_manifest_date' );
+        $shipment_id = $wc_order->get_meta( '_siusk24_shipment_id' );
+        $cart_id = $wc_order->get_meta( '_siusk24_cart_id' );
+        $terminal_id = $wc_order->get_meta( '_siusk24_terminal_id' );
+        $identifier = $wc_order->get_meta( '_siusk24_identifier' );
+
+        $receiver_country = $wc_order->get_shipping_country();
+
+        $carrier_code = $wc_order->get_meta('_siusk24_service' );
+
         $carrier = $this->core->get_service_info($carrier_code);
         $available_services = $this->core->get_additional_services($carrier_code);
         ?>
@@ -46,12 +79,15 @@ class Order {
         </p>
         <?php if ($shipment_id && $cart_id): ?>
             <?php
-            $tracking = get_post_meta($post->ID, '_siusk24_tracking_numbers', true);
+            $tracking = $wc_order->get_meta('_siusk24_tracking_numbers' );
             $label_ready = false;
             if (empty($tracking)) {
                 try {
                     $response = $this->api->get_label($shipment_id);
-                    update_post_meta($post->ID, '_siusk24_tracking_numbers', $response->tracking_numbers);
+                    // ver.1.0.2
+                    $wc_order->update_meta_data( '_siusk24_tracking_numbers', $response->tracking_numbers );
+                    $wc_order->save();
+
                     $tracking = $response->tracking_numbers;
                     $label_ready = true;
                 } catch (\Exception $e) {
@@ -60,7 +96,7 @@ class Order {
             } else {
                 $label_ready = true;
             }
-            $active_additional_services = $this->get_active_additional_services($post->ID, $available_services);
+            $active_additional_services = $this->get_active_additional_services( $order_id, $available_services );
             ?>
             <?php if (!empty($active_additional_services)) : ?>
                 <p>
@@ -143,6 +179,29 @@ class Order {
     }
     
     private function render_services($services, $order) {
+        // ver.1.0.2
+        $order_id = null;
+        $order_total = '';
+
+        if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+            // HPOS usage is enabled.
+            if ( is_a( $order, 'WC_Order' ) ) {
+                $order_id = $order->get_id();
+            }
+        } else {
+            // Traditional orders are in use.
+            if ( is_object( $order ) && $order->post_type == 'shop_order' ) {
+                $order_id = $order->ID;
+            }
+        }
+
+        if( ! empty( $order_id ) ) {
+            $wc_order = wc_get_order( $order_id );
+            if( $wc_order && ! is_wp_error($wc_order)) {
+                $order_total = $wc_order->get_meta( '_order_total' );
+            }
+        }
+
         $all_services = Helper::additional_services();
         $this->build_title(__("Services", 'siusk24'));
         echo '<ul class = "siusk24-services">';
@@ -152,7 +211,7 @@ class Order {
             }
             echo '<li><input type = "checkbox" id = "service_'.$id.'" class = "siusk24_services" name = "services[]" value = "'.$id.'"/><label for = "service_'.$id.'">'.$all_services[$id].'</label>';
             if ($id == 'cod') {
-                echo '<span class = "cod-amount"><input type = "number" name = "cod_amount" value = "'.get_post_meta($order->ID, '_order_total', true).'">EUR</span>';
+                echo '<span class = "cod-amount"><input type = "number" name = "cod_amount" value = "'. esc_attr( $order_total ) .'">EUR</span>';
             }
             echo '</li>';      
         }
@@ -175,11 +234,14 @@ class Order {
 
     private function get_active_additional_services($order_id, $available_services) {
         $additional_services = array();
-        
-        $addserv_insurance = get_post_meta($order_id, '_siusk24_insurance', true);
-        if (!empty($addserv_insurance) && in_array('insurance', $available_services)) {
-            $price = wc_price($addserv_insurance, array('currency' => 'EUR'));
-            $additional_services['insurance'] = Helper::additional_services('insurance') . ' (' . $price . ')';
+        // ver.1.0.2
+        $wc_order = wc_get_order( $order_id );
+        if( $wc_order && ! is_wp_error( $wc_order ) ) {
+            $addserv_insurance = $wc_order->get_meta( '_siusk24_insurance' );
+            if ( ! empty($addserv_insurance) && in_array('insurance', $available_services)) {
+                $price                            = wc_price($addserv_insurance, array('currency' => 'EUR'));
+                $additional_services['insurance'] = Helper::additional_services('insurance') . ' (' . $price . ')';
+            }
         }
 
         return $additional_services;
@@ -205,11 +267,21 @@ class Order {
     }
 
     public function load_order() {
-        $id = $_POST['order_id'] ?? 0;
-        if ($id && $post = get_post($id)) {
+
+        $order_id = null;
+
+        if( ! empty($_POST['order_id']) ) {
+            $order_id = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+        }
+
+        if ( $order_id ) {
+
             try {
+
+                $wc_order = wc_get_order( $order_id );
+
                 ob_start();
-                $this->meta_box_content($post);
+                $this->meta_box_content( $wc_order );
                 $content = ob_get_contents();
                 ob_end_clean();
                 wp_send_json_success(['status' => 'ok', 'content' => $content]);
@@ -217,6 +289,7 @@ class Order {
                 wp_send_json_success(['status' => 'error', 'msg' => $e->getMessage()]);
             }
         }
+
         wp_send_json_success(['status' => 'error', 'msg' => __('Order not found', 'siusk24')]);
     }
 
@@ -227,31 +300,42 @@ class Order {
         wp_send_json_success($status);
     }
 
-    public function is_siusk24_order($post) {
-        $order = wc_get_order($post->ID);
-        return $order->has_shipping_method(Helper::get_prefix());
-    }
+
 
     public function add_service_code($order_id) {
         //$methods_params = siusk24lt_configs('method_params');
 
-        if (isset($_POST[Helper::get_prefix() . '_terminal']) && $order_id) {
-            update_post_meta($order_id, '_siusk24_terminal_id', $_POST[Helper::get_prefix() . '_terminal']);
+        $wc_order = wc_get_order( $order_id );
+        if( ! $wc_order || is_wp_error( $wc_order) ) {
+            return;
         }
+
+        if (isset($_POST[Helper::get_prefix() . '_terminal']) && $order_id) {
+            // ver.1.0.2
+            $wc_order->update_meta_data( '_siusk24_terminal_id', $_POST[Helper::get_prefix() . '_terminal'] );
+            $wc_order->save();
+        }
+
         if (isset($_POST['shipping_method']) && is_array($_POST['shipping_method'])) {
+
             foreach ($_POST['shipping_method'] as $ship_method) {
+
                 if (stripos($ship_method, Helper::get_prefix() . '_service') !== false) {
                     $service_code = str_ireplace(Helper::get_prefix() . '_service_', '', $ship_method);
-                    update_post_meta($order_id, '_siusk24_service', $service_code);
-                    update_post_meta($order_id, '_siusk24_method', 1);
+                    $wc_order->update_meta_data('_siusk24_service', $service_code);
+                    $wc_order->update_meta_data('_siusk24_method', 1);
+                    $wc_order->save();
                     break;
                 }
                 if (stripos($ship_method, Helper::get_prefix() . '_terminal') !== false) {
-                    $service_code = $this->core->get_service_form_method($ship_method);
-                    $identifier = $this->core->get_identifier_form_method($ship_method);
-                    update_post_meta($order_id, '_siusk24_service', $service_code);
-                    update_post_meta($order_id, '_siusk24_identifier', $identifier);
-                    update_post_meta($order_id, '_siusk24_method', 1);
+                    $service_code = $this->core->get_service_form_method( $ship_method );
+                    $identifier = $this->core->get_identifier_form_method( $ship_method );
+                    $wc_order->update_meta_data( '_siusk24_service', $service_code );
+                    if( 'radio-control-0-' !== $identifier && 'radio-control-1-' !== $identifier ) {
+                        $wc_order->update_meta_data('_siusk24_identifier', $identifier);
+                    }
+                    $wc_order->update_meta_data( '_siusk24_method', 1 );
+                    $wc_order->save();
                     break;
                 }
             }

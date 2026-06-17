@@ -105,6 +105,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+console.log('Siusk24Mapping...');
+
 
 
 
@@ -206,12 +208,15 @@ var Siusk24Mapping = /*#__PURE__*/function () {
       }
 
       console.info(this.prefix + 'Initializing Terminal Mapping');
+      console.log(this.prefix + 'Initializing Terminal Mapping');
       this.dom.addOverlay();
       this.dom.addContainer(this.containerId, this.strings); // load check for leaflet and plugins first
 
       this.depend.loadLeaflet(function () {
         _this2.map = new _modules_Map_js__WEBPACK_IMPORTED_MODULE_3__["Map"](_this2.dom.UI.map, _this2);
-        var params = Object(_modules_Tools_js__WEBPACK_IMPORTED_MODULE_4__["makeQueryParams"])({
+
+        console.log('siusk24configget');
+        /*let siusk24configget = {
           'q[country_code_eq]': country_code,
           'q[identifier_eq]': identifier,
           //'q[city_eq]': city,
@@ -220,16 +225,34 @@ var Siusk24Mapping = /*#__PURE__*/function () {
           'city': city,
           'receiver_address': receiver_address + ' ' + postal_code,
           'distance': max_distance
-        }); // Get terminal list
+        };*/
+
+
+        let siusk24configget = {
+          'q[country_code_eq]': country_code,
+          'q[identifier_eq]': identifier,
+          //'q[city_eq]': city,
+          'country_code': country_code,
+          //'postal_code': postal_code,
+          'city': city,
+          //'receiver_address': receiver_address + ' ' + postal_code,
+          'distance': max_distance
+        };
+
+        console.log(siusk24configget);
+
+        var params = Object(_modules_Tools_js__WEBPACK_IMPORTED_MODULE_4__["makeQueryParams"])(siusk24configget); // Get terminal list
 
         fetch(_this2.api_server_url + 'parcel_machines' + (params ? '?' + params : '')).then(function (response) {
           return response.json();
         }).then(function (json) {
+          //console.log('RAW terminals');
           //console.log(json);
+          // coords lat-lng problem?
           var terminals = json.result.parcel_machines.map(function (terminal) {
             terminal['coords'] = {
-              lat: terminal.y_cord,
-              lng: terminal.x_cord
+              lng: terminal.y_cord,
+              lat: terminal.x_cord
             };
             return terminal;
           }); //.filter(terminal => terminal.identifier == 'lp_express');
@@ -239,6 +262,7 @@ var Siusk24Mapping = /*#__PURE__*/function () {
           _this2.dom.renderTerminalList(_this2.map.locations);
 
           console.info(_this2.prefix + 'Terminals loaded');
+          console.log( terminals );
 
           _this2.dom.removeOverlay();
 
@@ -522,7 +546,46 @@ var DOMManipulator = /*#__PURE__*/function () {
       var _this = this;
 
       this.TMJS.sub('terminal-selected', function (data) {
+        console.log('siusk24 select terminal-selected via Map button');
+        console.log(data.id);
+        console.log(data);
         _this.UI.container.querySelector('.tmjs-selected-terminal').innerText = `${data.name}, ${data.address}`;
+
+        function setSiusk24VisibleSelectOptionOnMapChange(selectName, value) {
+          // Part 1: Find and set the select value
+          const selectElement = document.querySelector(`select[name="${selectName}"]`);
+
+          if (!selectElement) {
+            console.error(`Select with name "${selectName}" not found`);
+            return false;
+          } else {
+            console.log(`Select with name "${selectName}" found`);
+          }
+
+          // Set the value
+          selectElement.value = value;
+
+          // Trigger native change event
+          selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+
+          // Part 2: Check if Select2 is initialized and update UI
+          if (typeof jQuery !== 'undefined' && jQuery(selectElement).data('select2')) {
+            // Select2 is initialized - trigger Select2 change
+            jQuery(selectElement).val(value).trigger('change');
+          }
+
+          return true;
+        }
+
+
+        setSiusk24VisibleSelectOptionOnMapChange('siusk24_terminal', data.id);
+
+
+        jQuery('.tmjs-selected-terminal').addClass('show-selected');
+
+        if (typeof siusk_terminal_previously_selected_description !== 'undefined' ) {
+          siusk_terminal_previously_selected_description = `${data.name}, ${data.address}`;
+        }
       });
       this.TMJS.sub('geolocation', function (coords) {
         _this.UI.modal.querySelector('.tmjs-search-result').innerText = "Lat: ".concat(coords.lat, " Long: ").concat(coords.lng);
@@ -707,6 +770,7 @@ var DOMManipulator = /*#__PURE__*/function () {
 
       this.UI.container.querySelector('.tmjs-open-modal-btn').addEventListener('click', function (e) {
         e.preventDefault();
+        console.log('Siusk 24: tmjs-open-modal-btn_openModal');
 
         _this2.openModal();
       });
@@ -822,9 +886,63 @@ var DOMManipulator = /*#__PURE__*/function () {
       }
 
       if (event.target.classList.contains('tmjs-select-btn')) {
+
+        function siusk24_block_checkout_react_input_value(input,value) {
+
+          if (typeof input != 'undefined' && input !== null) {
+            var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype,
+                "value"
+            ).set;
+            nativeInputValueSetter.call( input, value );
+
+            var inputEvent = new Event( "input", {bubbles: true} );
+            input.dispatchEvent( inputEvent );
+          }
+        }
           
         console.log('Trying to select terminal:', data.dataset.id);
+
         jQuery('input[name="siusk24_terminal"]').val(data.dataset.id);
+        jQuery('.tmjs-selected-terminal').addClass('show-selected');
+
+        if (typeof siusk24_block_checkout_react_input_value === 'function') {
+          siusk24_block_checkout_react_input_value(document.getElementById('siusk24_terminal'), data.dataset.id );
+          if (typeof siusk_terminal_previously_selected !== 'undefined') {
+            console.log('Set siusk_terminal_previously_selected:', data.dataset.id);
+            siusk_terminal_previously_selected = data.dataset.id;
+
+            function setSiusk24VisibleSelectValueOnMapChange(selectName, value) {
+              // Part 1: Find and set the select value
+              const selectElement = document.querySelector(`select[name="${selectName}"]`);
+
+              if (!selectElement) {
+                console.error(`Select with name "${selectName}" not found`);
+                return false;
+              } else {
+                console.log(`Select with name "${selectName}" found`);
+              }
+
+              // Set the value
+              selectElement.value = value;
+
+              // Trigger native change event
+              selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+
+              // Part 2: Check if Select2 is initialized and update UI
+              if (typeof jQuery !== 'undefined' && jQuery(selectElement).data('select2')) {
+                // Select2 is initialized - trigger Select2 change
+                jQuery(selectElement).val(value).trigger('change');
+              }
+
+              return true;
+            }
+
+
+            setSiusk24VisibleSelectValueOnMapChange('siusk24_terminal', data.dataset.id);
+
+          }
+        }
         /*
         jQuery.ajax({
           type: 'POST',

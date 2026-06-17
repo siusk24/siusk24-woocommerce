@@ -9,13 +9,13 @@ jQuery(document).ready(function($){
     });
     $('.has-depends').trigger('change');
 
-    $('.check-api-this').on('change', function() {
+    /*$('.check-api-this').on('change', function() {
         $('button.check-api-btn').prop('disabled', true);
     });
 
     if ( $('button.check-api-btn').hasClass('disable_all') ) {
         $('button.check-api-btn').closest('tr').nextAll().addClass('disabled');
-    }
+    }*/
 
     $('button.check-api-btn').on('click', function() {
         var btn = $(this);
@@ -27,9 +27,15 @@ jQuery(document).ready(function($){
         jQuery.post(
             siusk24data.ajax_url,
             {
-                'action': 'siusk24_check_api'
+                'action': 'siusk24_check_api',
+                'data': {
+                    'siusk_api_token': jQuery('#woocommerce_siusk24_api_token').val()
+                }
             },
             function( response ) {
+                console.log('siusk_24_api_check_reponse');
+                console.log(response);
+                console.log();
                 if ( typeof response !== 'object' || response === null ) {
                     check_status.addClass('error').text('Failed to check');
                     return;

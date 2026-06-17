@@ -72,14 +72,21 @@ class Core
         //$send_off = $config['send_off'];
         $send_off = 'courier';
 
+        $company = ! empty($config['company']) ? $config['company'] : '';
+        $shop_address = ! empty($config['shop_address']) ? $config['shop_address'] : '';
+        $shop_postcode = ! empty($config['shop_postcode']) ? $config['shop_postcode'] : '';
+        $shop_city = ! empty($config['shop_city']) ? $config['shop_city'] : '';
+        $shop_countrycode = ! empty($config['shop_countrycode']) ? $config['shop_countrycode'] : '';
+        $shop_phone = ! empty($config['shop_phone']) ? $config['shop_phone'] : '';
+
         $sender = new Sender($send_off);
-        $sender->setCompanyName($config['company']);
-        $sender->setContactName($config['company']);
-        $sender->setStreetName($config['shop_address']);
-        $sender->setZipcode($config['shop_postcode']);
-        $sender->setCity($config['shop_city']);
-        $sender->setCountryId($this->get_country_id($config['shop_countrycode']));
-        $sender->setPhoneNumber($config['shop_phone']);
+        $sender->setCompanyName($company);
+        $sender->setContactName($company);
+        $sender->setStreetName($shop_address);
+        $sender->setZipcode($shop_postcode);
+        $sender->setCity($shop_city);
+        $sender->setCountryId($this->get_country_id($shop_countrycode));
+        $sender->setPhoneNumber($shop_phone);
         return $sender;
     }
 
@@ -349,22 +356,22 @@ class Core
             switch ($main_show_type) {
                 case 'cheapest':
                     usort($offers, function ($v, $k) {
-                        return $k->price <= $v->price;
+                        return $v->price <=> $k->price;
                     });
                     break;
                 case 'expensive':
                     usort($offers, function ($v, $k) {
-                        return $k->price >= $v->price;
+                        return $k->price <=> $v->price;
                     });
                     break;
                 case 'fastest':
                     usort($offers, function ($v, $k) {
-                        return $this->get_offer_delivery($k) <= $this->get_offer_delivery($v);
+                        return $this->get_offer_delivery($v) <=> $this->get_offer_delivery($k);
                     });
                     break;
                 case 'slowest':
                     usort($offers, function ($v, $k) {
-                        return $this->get_offer_delivery($k) >= $this->get_offer_delivery($v);
+                        return $this->get_offer_delivery($k) <=> $this->get_offer_delivery($v);
                     });
                     break;
             }
@@ -438,9 +445,16 @@ class Core
     public function is_offer_terminal($offer)
     {
         $services = $this->api->get_services();
+
         foreach ($services as $service) {
             if ($offer->service_code == $service->service_code) {
+
+                /*if( 4 == $service->id ) {
+                    return true;
+                }*/
+                // methods with MAP (terminals).
                 if ($service->delivery_to_address == false) {
+
                     return true;
                 }
                 return false;
@@ -594,15 +608,17 @@ class Core
 
         try {
             $wc_order = $this->get_wc_order($wc_order_id);
+            // ver. 1.0.2
+            $shipment_id = $wc_order->get_meta( '_siusk24_shipment_id' );
 
-            if (!$allow_regenarate && !empty(get_post_meta($wc_order_id, '_siusk24_shipment_id', true))) {
+            if ( ! $allow_regenarate && ! empty( $shipment_id ) ) {
                 return ['status' => 'error', 'msg' => __('The shipment is already registered', 'siusk24')];
             }
 
             if (empty($cod_amount)) {
-                $cod_amount = get_post_meta($wc_order_id, '_order_total', true);
+                $cod_amount = $wc_order->get_meta('_order_total' );
             }
-            $service_code = get_post_meta($wc_order_id, '_siusk24_service', true);
+            $service_code = $wc_order->get_meta('_siusk24_service' );
 
             $sender = $this->get_sender();
             $receiver = $this->get_receiver($wc_order);
@@ -632,13 +648,19 @@ class Core
             $api_order->setAdditionalServices($services, $cod_amount);
             $response = $this->api->create_order($api_order);
 
-            update_post_meta($wc_order_id, '_siusk24_shipment_id', $response->shipment_id);
-            update_post_meta($wc_order_id, '_siusk24_cart_id', $response->cart_id);
+            // ver.1.0.2
+            $wc_order->update_meta_data('_siusk24_shipment_id', $response->shipment_id );
+            $wc_order->update_meta_data('_siusk24_cart_id', $response->cart_id );
+
             if (!empty($response->insurance)) {
-                update_post_meta($wc_order_id, '_siusk24_insurance', esc_sql($response->insurance));
+                $wc_order->update_meta_data('_siusk24_insurance', esc_sql($response->insurance) );
             }
 
+            $wc_order->save();
+
             return ['status' => 'ok'];
+
+
         } catch (\Exception $e) {
             return ['status' => 'error', 'msg' => $e->getMessage()];
         }
@@ -669,7 +691,10 @@ class Core
                 }
 
                 if (!empty($response->tracking_numbers)) {
-                    update_post_meta($order_id, '_siusk24_tracking_numbers', $response->tracking_numbers);
+                    // ver.1.0.2
+                    $wc_order = wc_get_order($order_id);
+                    $wc_order->update_meta_data( '_siusk24_tracking_numbers', $response->tracking_numbers );
+                    $wc_order->save();
                 }
 
                 $pdf_dir = $temp_dir . '/' . $shipment_id . '.pdf';
@@ -724,17 +749,32 @@ class Core
     public function remove_order($wc_order_id)
     {
         try {
+
             $wc_order = $this->get_wc_order($wc_order_id);
 
-            $shipment_id = get_post_meta($wc_order_id, '_siusk24_shipment_id', true);
-            $this->api->cancel_order($shipment_id);
-            delete_post_meta($wc_order_id, '_siusk24_shipment_id');
-            delete_post_meta($wc_order_id, '_siusk24_cart_id');
-            delete_post_meta($wc_order_id, '_siusk24_tracking_numbers');
-            delete_post_meta($wc_order_id, '_siusk24_insurance');
+            if( $wc_order && ! is_wp_error( $wc_order ) ) {
 
-            return ['status' => 'ok'];
+                $shipment_id = $wc_order->get_meta( '_siusk24_shipment_id' );
+
+                $this->api->cancel_order($shipment_id);
+
+                $wc_order->delete_meta_data('_siusk24_shipment_id');
+                $wc_order->delete_meta_data( '_siusk24_cart_id');
+                $wc_order->delete_meta_data( '_siusk24_tracking_numbers');
+                $wc_order->delete_meta_data( '_siusk24_insurance');
+
+                $wc_order->save();
+
+                return ['status' => 'ok'];
+            }
         } catch (\Exception $e) {
+
+            if ( function_exists( 'wc_get_logger' ) ) {
+                \wc_get_logger()->debug( 'SIUSK_24:', array( 'source' => 'siusk-24' ) );
+                \wc_get_logger()->debug( print_r( __METHOD__ . ': ' . __LINE__, true ), array( 'source' => 'siusk-24' ) );
+                \wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'siusk-24' ) );
+            }
+
             return ['status' => 'error', 'msg' => $e->getMessage()];
         }
     }
@@ -800,14 +840,20 @@ class Core
         );
 
         $results = wc_get_orders($args);
-        if (empty($results)) {
-            return false;;
+        if ( empty( $results ) ) {
+            return false;
         }
 
         foreach ($results as $order_id) {
-            $date = get_post_meta($order_id, '_siusk24_manifest_date', true);
-            if (!$date) {
-                update_post_meta($order_id, '_siusk24_manifest_date', date('Y-m-d H:i:s'));
+            $wc_order = wc_get_order( $order_id );
+            if( ! $wc_order || is_wp_error( $wc_order) ) {
+                continue;
+            }
+
+            $date = $wc_order->get_meta( '_siusk24_manifest_date');
+            if ( ! $date ) {
+                $wc_order->update_meta_data( '_siusk24_manifest_date', date('Y-m-d H:i:s') );
+                $wc_order->save();
             }
         }
 

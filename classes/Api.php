@@ -64,6 +64,10 @@ class Api {
     public function get_countries($force = false) {
         $token = Helper::get_config_value('api_token', $this->config, false);
         
+        if( empty( $token ) ) {
+            $token = ! empty($_POST['data']['siusk_api_token']) ?  sanitize_text_field(wp_unslash($_POST['data']['siusk_api_token'])) : false;
+        }
+
         if ( ! $token ) {
             return [];
         }
@@ -114,7 +118,10 @@ class Api {
             $this->update_terminals();
         }
         
-        return Terminal::get($country, $identifier);
+        // Get terminals.
+        $terminals = Terminal::get($country, $identifier);
+
+        return $terminals;
     }
     
     public function get_offers($sender, $receiver, $parcels){

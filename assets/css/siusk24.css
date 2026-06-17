@@ -118,5 +118,18 @@ i.siusk24-selected-terminal{
 }
 .siusk24_terminal + span{
   margin-bottom: 8px;
-  max-width: 230px;
+  /*max-width: 230px;*/
+  max-width: inherit;
+}
+
+.tmjs-selected-terminal {
+  max-width: 90%;
+}
+
+.tmjs-selected-terminal.show-selected {
+  margin-top: 20px;
+  border: 2px solid #15e347;
+  padding: 10px;
+  max-width: 90%;
+  border-radius: 5px;
 }

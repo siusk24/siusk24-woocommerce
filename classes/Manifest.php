@@ -633,7 +633,8 @@ class Manifest {
                                     <td class="manage-column column-carrier">
                                         <div class="data-grid-cell-content">
                                             <?php
-                                            $carrier_code = get_post_meta($order->get_id(), '_siusk24_service', true);
+                                            // ver.1.0.2
+                                            $carrier_code = $order->get_meta( '_siusk24_service' );
                                             $carrier = $this->core->get_service_info($carrier_code, $carriers);
                                             $carrier_name = $carrier->name ?? '-';
                                             $carrier_img = $carrier->image ?? false;
