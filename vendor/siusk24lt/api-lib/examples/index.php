@@ -70,6 +70,7 @@ try {
         ->setShippingType('terminal')
         ->setContactName('TEST')
         ->setZipcode('12-345')
+        ->setTerminalId('51116')
         ->setPhoneNumber('+37061234567')
         ->setEori('GB987654312011')
         ->setCountryId('116');

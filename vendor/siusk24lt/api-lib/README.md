@@ -68,7 +68,8 @@ try {
     ->setCompanyName('company_name')
     ->setContactName('contact_name')
     ->setStreetName('street_name')
-    ->setZipcode('zipcode')
+    ->setZipcode('terminal_zipcode')
+    ->setTerminalId('terminal_id')
     ->setCity('city')
     ->setPhoneNumber('phone_number')
     ->setCountryId('country_id');

@@ -8,10 +8,18 @@ use Mijora\S24IntApiLib\Exception\S24ApiException;
 
 class Receiver extends Person
 {
+    protected $terminal_id;
 
     public function __construct($shipping_type)
     {
         parent::__construct($shipping_type);
+    }
+
+    public function setTerminalId($terminal_id)
+    {
+        $this->terminal_id = $terminal_id;
+
+        return $this;
     }
 
     public function generateReceiver()
@@ -37,11 +45,15 @@ class Receiver extends Person
             'country_id' => $this->country_id,
             'state_code' => $this->state_code,
             'eori' => $this->eori,
-            'hs_code' => $this->hs_code ? $this->hs_code : ''
+            'hs_code' => $this->hs_code ? $this->hs_code : '',
         );
 
-        $zipcode_key = $this->shipping_type === self::SHIPPING_COURIER ? 'zipcode' : 'terminal_zipcode';
-        $receiver[$zipcode_key] = $this->zipcode;
+        if ($this->shipping_type === self::SHIPPING_TERMINAL) {
+            $receiver['terminal_zipcode'] = $this->zipcode;
+            $receiver['terminal_id'] = $this->terminal_id;
+        } else {
+            $receiver['zipcode'] = $this->zipcode;
+        }
 
         return $receiver;
     }

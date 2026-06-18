@@ -13,8 +13,8 @@
         }
     ],
     "require": {
-        "siusk24lt/api-lib" : "dev-master",
-        "setasign/fpdf": "^1.8",
+        "siusk24lt/api-lib" : "^0.1.3",
+        "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.3"
     },
     "repositories": [

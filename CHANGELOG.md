@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+### Updated
+- Siusk24 API library to 0.1.3
+- Setasign FPDI API library to 2.6.8
+
 ## [1.0.2] 2025-03-10
 ### Fixed
 - HPOS compatibility

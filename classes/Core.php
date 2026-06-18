@@ -630,6 +630,7 @@ class Core
                 }
                 $receiver->setShippingType('terminal');
                 $receiver->setZipcode(Helper::clear_postcode($terminal_obj->zip, $terminal_obj->country_code));
+                $receiver->setTerminalId($terminal_obj->id);
             }
             if ($eori_number) {
                 $receiver->setEori($eori_number);
