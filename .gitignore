@@ -1,0 +1,6 @@
+/*.zip
+/blocks-builder/node_modules/
+/siusk24-woocommerce/languages/*.pot~
+/siusk24-woocommerce/languages/*.po~
+/siusk24-woocommerce/languages/*.mo~
+/siusk24-woocommerce/languages/*.l10n.php
