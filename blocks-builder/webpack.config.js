@@ -28,7 +28,7 @@ module.exports = {
 		),
 	},
 	output: {
-        path: path.resolve( __dirname, '../assets/build' ),
+        path: path.resolve( __dirname, '../siusk24-woocommerce/assets/build' ),
         filename: '[name].js',
     },
 	module: {
