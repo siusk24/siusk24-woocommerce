@@ -1,7 +1,15 @@
 # Changelog
 
+## [1.0.3] 2026-06-18
+### Improved
+- Added to receiver data to indicate terminal ID
+
+### Updated
+- Siusk24 API library to 0.1.3
+- Setasign FPDI API library to 2.6.8
+
 ## [1.0.2] 2025-03-10
-### Fixed
+### Improved
 - HPOS compatibility
 - Block checkout compatibility for Courier services
 - Block checkout compatibility for Terminals services (with map)

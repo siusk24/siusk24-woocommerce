@@ -1,0 +1,26 @@
+{
+    "name": "mijora/siusk24-woocommerce",
+    "type": "wordpress-module",
+    "autoload": {
+        "psr-4": {
+            "Siusk24Woo\\": "classes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mijora",
+            "email": "info@mijora.lt"
+        }
+    ],
+    "require": {
+        "siusk24lt/api-lib" : "^0.1.3",
+        "setasign/fpdf": "1.8.*",
+        "setasign/fpdi": "^2.3"
+    },
+    "repositories": [
+        {
+            "type" : "vcs",
+            "url" : "git@github.com:siusk24/Siusk24LT.git"
+        }
+    ]
+}
