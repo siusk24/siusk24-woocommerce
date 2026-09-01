@@ -903,7 +903,8 @@ var DOMManipulator = /*#__PURE__*/function () {
           
         console.log('Trying to select terminal:', data.dataset.id);
 
-        jQuery('input[name="siusk24_terminal"]').val(data.dataset.id);
+        jQuery('select[name="siusk24_terminal"]').val(data.dataset.id).trigger('change');
+        jQuery('#siusk24_terminal_hidden').val(data.dataset.id);
         jQuery('.tmjs-selected-terminal').addClass('show-selected');
 
         if (typeof siusk24_block_checkout_react_input_value === 'function') {
