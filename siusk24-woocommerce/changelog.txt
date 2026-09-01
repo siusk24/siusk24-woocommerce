@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.0.4 =
+* Fixed - Parcel terminal now saves matching carrier, service and identifier from the selected locker
+* Fixed - Classic checkout hidden field overwriting selected terminal
+* Improved - Block checkout terminal save uses selected locker network
+* Improved - Order metabox corrects mismatched terminal data before shipment
+
 = 1.0.3 =
 * Improved - Added to receiver data to indicate terminal ID
 * Updated - Siusk24 API library to 0.1.3

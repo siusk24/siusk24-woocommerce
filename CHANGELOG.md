@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.4] 2026-09-01
+### Fixed
+- Parcel terminal now saves matching carrier, service and identifier from the selected locker
+- Classic checkout hidden field overwriting selected terminal
+
+### Improved
+- Block checkout terminal save uses selected locker network
+- Order metabox corrects mismatched terminal data before shipment
+
 ## [1.0.3] 2026-06-18
 ### Improved
 - Added to receiver data to indicate terminal ID
