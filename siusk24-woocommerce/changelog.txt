@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.0.5 =
+* Fixed - Fixed block editor fatal error when WC session is unavailable
+
 = 1.0.4 =
 * Fixed - Parcel terminal now saves matching carrier, service and identifier from the selected locker
 * Fixed - Classic checkout hidden field overwriting selected terminal
