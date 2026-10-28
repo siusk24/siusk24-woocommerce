@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- Fix block editor fatal error when WC session is unavailable
+
 ## [1.0.4] 2026-09-01
 ### Fixed
 - Parcel terminal now saves matching carrier, service and identifier from the selected locker
