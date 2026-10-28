@@ -72,7 +72,8 @@ class BlockCheckout implements IntegrationInterface {
 	 */
 	public function get_script_data() {
 
-		$customer = WC()->session->get( 'customer' );
+		// Session is not available in admin (e.g. block editor)
+		$customer = ( WC()->session ) ? WC()->session->get( 'customer' ) : null;
 		$country  = 'ALL';
 
 		if ( isset( $customer['shipping_country'] ) ) {
@@ -80,8 +81,6 @@ class BlockCheckout implements IntegrationInterface {
 		} elseif ( isset( $customer['country'] ) ) {
 			$country = $customer['country'];
 		}
-
-		$termnal_id = WC()->session->get( 'siusk24_terminal_id' );
 
 		$core       = new Core();
 		$api        = $core->get_api();
